@@ -8,7 +8,7 @@ import {
 	Post
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
-import { Public } from "src/auth/auth.guard";
+import { Public } from "src/modules/auth/auth.guard";
 
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { FindOneParams } from "./dtos/params";
