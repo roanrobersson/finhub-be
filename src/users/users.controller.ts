@@ -7,7 +7,7 @@ import {
 	Param,
 	Post
 } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { Public } from "src/auth/auth.guard";
 
 import { CreateUserDto } from "./dtos/create-user.dto";
@@ -23,6 +23,7 @@ export class UsersController {
 
 	@Public()
 	@Post()
+	@ApiOperation({ summary: "Create a new user" })
 	create(@Body() createUserDto: CreateUserDto) {
 		const user = new User();
 		user.name = createUserDto.name;
@@ -33,16 +34,19 @@ export class UsersController {
 	}
 
 	@Get()
+	@ApiOperation({ summary: "List all users" })
 	findAll() {
 		return this.usersService.findAll();
 	}
 
 	@Get(":id")
+	@ApiOperation({ summary: "Find a user by id" })
 	findOne(@Param() params: FindOneParams) {
 		return this.usersService.findOne(params.id);
 	}
 
 	@Delete(":id")
+	@ApiOperation({ summary: "Remove a user by id" })
 	remove(@Param() params: FindOneParams) {
 		return this.usersService.delete(params.id);
 	}
