@@ -12,14 +12,14 @@ export class AuthService {
 
 	async signIn(
 		username: string,
-		pass: string
+		password: string
 	): Promise<{ access_token: string; refresh_token: string }> {
-		const user = await this.usersService.findOne(username);
-		if (user?.password !== pass) {
+		const user = await this.usersService.findOneByUsername(username);
+		if (!(await this.usersService.validatePassword(password, user.password))) {
 			throw new UnauthorizedException();
 		}
 
-		const payload = { sub: user.userId, username: user.username };
+		const payload = { sub: user.id, username: user.email };
 		const access_token = await this.jwtService.signAsync(payload, {
 			expiresIn: process.env.JWT_EXPIRATION_TIME || "15m"
 		});
@@ -40,13 +40,13 @@ export class AuthService {
 		try {
 			const payload = await this.jwtService.verifyAsync(refreshToken);
 
-			const user = await this.usersService.findOne(payload.username);
+			const user = await this.usersService.findOneByUsername(payload.username);
 			if (!user) {
-				throw new UnauthorizedException("Usuário inválido.");
+				throw new UnauthorizedException("Invalid user.");
 			}
 
 			const newAccessToken = await this.jwtService.signAsync(
-				{ sub: user.userId, username: user.username },
+				{ sub: user.id, username: user.email },
 				{ expiresIn: process.env.JWT_EXPIRATION_TIME || "15m" }
 			);
 

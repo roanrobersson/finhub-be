@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-local
+    environment:
+      POSTGRES_USER: local
+      POSTGRES_PASSWORD: local
+      POSTGRES_DB: finhub
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres-data:
