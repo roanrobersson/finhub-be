@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Post, Put } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
 @Controller("roles")
-export class RolesController {
+export class RoleController {
 	@Get()
 	@ApiOperation({ summary: "List all roles" })
 	findAll() {

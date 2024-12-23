@@ -10,8 +10,8 @@ import {
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
-import { Public } from "./auth.guard";
-import { AuthService } from "./auth.service";
+import { Public } from "./AuthGuard";
+import { AuthService } from "./AuthService";
 
 @Controller("auth")
 export class AuthController {

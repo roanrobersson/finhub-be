@@ -1,6 +1,6 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
-import { User } from "src/modules/users/user.entity";
+import { User } from "src/modules/users/UserEntity";
 import { SeederOptions } from "typeorm-extension";
 
 export const databaseConfig = {
