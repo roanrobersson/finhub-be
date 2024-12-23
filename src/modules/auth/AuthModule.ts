@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
-import { UserModule } from "src/modules/users/UserModule";
+import { UserModule } from "src/modules/user/UserModule";
 
 import { AuthController } from "./AuthController";
 import { AuthGuard } from "./AuthGuard";

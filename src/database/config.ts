@@ -2,9 +2,9 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
 import { SeederOptions } from "typeorm-extension";
 
-import { Permission } from "../modules/roles/PermissionEntity";
-import { Role } from "../modules/roles/RoleEntity";
-import { User } from "../modules/users/UserEntity";
+import { Permission } from "../modules/role/PermissionEntity";
+import { Role } from "../modules/role/RoleEntity";
+import { User } from "../modules/user/UserEntity";
 
 export const databaseConfig = {
 	imports: [ConfigModule],
