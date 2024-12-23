@@ -31,7 +31,7 @@ export class UserService {
 	}
 
 	async create(user: User): Promise<User> {
-		const hashedPassword = await this.hashPassword(user.password);
+		const hashedPassword = await UserService.hashPassword(user.password);
 		user.password = hashedPassword;
 		return this.userRepository.save(user);
 	}
@@ -40,14 +40,14 @@ export class UserService {
 		await this.userRepository.delete(id);
 	}
 
-	async validatePassword(
+	static async validatePassword(
 		plainPassword: string,
 		hashedPassword: string
 	): Promise<boolean> {
 		return bcrypt.compare(plainPassword, hashedPassword);
 	}
 
-	private async hashPassword(password: string): Promise<string> {
+	static async hashPassword(password: string): Promise<string> {
 		const saltRounds = 10;
 		return bcrypt.hash(password, saltRounds);
 	}

@@ -25,10 +25,11 @@ export class UserController {
 	@Post()
 	@ApiOperation({ summary: "Create a new user" })
 	create(@Body() createUserDto: CreateUserDto) {
-		const user = new User();
-		user.name = createUserDto.name;
-		user.email = createUserDto.email;
-		user.password = createUserDto.password;
+		const user = new User(
+			createUserDto.name,
+			createUserDto.email,
+			createUserDto.password
+		);
 
 		return this.userService.create(user);
 	}
