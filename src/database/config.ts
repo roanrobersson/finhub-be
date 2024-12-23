@@ -1,7 +1,10 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
-import { User } from "src/modules/users/UserEntity";
 import { SeederOptions } from "typeorm-extension";
+
+import { Permission } from "../modules/roles/PermissionEntity";
+import { Role } from "../modules/roles/RoleEntity";
+import { User } from "../modules/users/UserEntity";
 
 export const databaseConfig = {
 	imports: [ConfigModule],
@@ -13,7 +16,7 @@ export const databaseConfig = {
 		username: configService.get<string>("DB_USERNAME"),
 		password: configService.get<string>("DB_PASSWORD"),
 		database: configService.get<string>("DB_NAME"),
-		entities: [User],
-		synchronize: configService.get<boolean>("DB_SYNC", false)
+		synchronize: configService.get<boolean>("DB_SYNC", false),
+		entities: [User, Permission, Role]
 	})
 } satisfies TypeOrmModuleAsyncOptions & SeederOptions;
