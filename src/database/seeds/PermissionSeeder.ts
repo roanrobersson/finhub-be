@@ -10,24 +10,29 @@ export default class PermissionSeeder implements Seeder {
 	): Promise<any> {
 		const repository = dataSource.getRepository(Permission);
 
-		const permissions = [
-			{
-				name: "QUERY_USERS_ROLES_PERMISSIONS",
-				description: "Allows to query users, roles and permissions"
-			},
-			{
-				name: "EDIT_USERS_ROLES_PERMISSIONS",
-				description: "Allows to edit users, roles and permissions"
-			}
-		];
+		const queryUsersRolesPermission = new Permission(
+			DefaultPermissionNameEnum.QUERY_USERS_ROLES_PERMISSIONS,
+			"Allows to query users, roles and permissions"
+		);
+		const editUsersRolesPermission = new Permission(
+			DefaultPermissionNameEnum.EDIT_USERS_ROLES_PERMISSIONS,
+			"Allows to edit users, roles and permissions"
+		);
+
+		const permissions = [queryUsersRolesPermission, editUsersRolesPermission];
 
 		for (const permission of permissions) {
-			const existingPermission = await repository.findOneBy({
+			const exists = await repository.existsBy({
 				name: permission.name
 			});
-			if (!existingPermission) {
-				await repository.insert(permission);
+			if (!exists) {
+				await repository.save(permission);
 			}
 		}
 	}
+}
+
+export enum DefaultPermissionNameEnum {
+	QUERY_USERS_ROLES_PERMISSIONS = "QUERY_USERS_ROLES_PERMISSIONS",
+	EDIT_USERS_ROLES_PERMISSIONS = "EDIT_USERS_ROLES_PERMISSIONS"
 }
