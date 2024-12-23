@@ -8,18 +8,18 @@ import {
 	Post
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
-import { Public } from "src/modules/auth/auth.guard";
+import { Public } from "src/modules/auth/AuthGuard";
 
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserDto } from "./dtos/CreateUserDto";
 import { FindOneParams } from "./dtos/params";
-import { User } from "./user.entity";
-import { UsersService } from "./users.service";
+import { User } from "./UserEntity";
+import { UserService } from "./UserService";
 
 @ApiBearerAuth()
 @Controller("users")
-export class UsersController {
-	@Inject(UsersService)
-	private usersService: UsersService;
+export class UserController {
+	@Inject(UserService)
+	private userService: UserService;
 
 	@Public()
 	@Post()
@@ -30,24 +30,24 @@ export class UsersController {
 		user.email = createUserDto.email;
 		user.password = createUserDto.password;
 
-		return this.usersService.create(user);
+		return this.userService.create(user);
 	}
 
 	@Get()
 	@ApiOperation({ summary: "List all users" })
 	findAll() {
-		return this.usersService.findAll();
+		return this.userService.findAll();
 	}
 
 	@Get(":id")
 	@ApiOperation({ summary: "Find a user by id" })
 	findOne(@Param() params: FindOneParams) {
-		return this.usersService.findOne(params.id);
+		return this.userService.findOne(params.id);
 	}
 
 	@Delete(":id")
 	@ApiOperation({ summary: "Remove a user by id" })
 	remove(@Param() params: FindOneParams) {
-		return this.usersService.delete(params.id);
+		return this.userService.delete(params.id);
 	}
 }

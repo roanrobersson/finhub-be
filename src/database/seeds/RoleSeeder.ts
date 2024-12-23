@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Role } from "../../modules/roles/role.entity";
+import { Role } from "../../modules/roles/RoleEntity";
 
 export default class RoleSeeder implements Seeder {
 	public async run(

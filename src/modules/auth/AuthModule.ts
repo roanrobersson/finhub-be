@@ -2,15 +2,15 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
-import { UsersModule } from "src/modules/users/users.module";
+import { UserModule } from "src/modules/users/UserModule";
 
-import { AuthController } from "./auth.controller";
-import { AuthGuard } from "./auth.guard";
-import { AuthService } from "./auth.service";
+import { AuthController } from "./AuthController";
+import { AuthGuard } from "./AuthGuard";
+import { AuthService } from "./AuthService";
 
 @Module({
 	imports: [
-		UsersModule,
+		UserModule,
 		ConfigModule.forRoot({
 			isGlobal: true
 		}),

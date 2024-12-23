@@ -3,15 +3,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { User } from "./user.entity";
+import { User } from "./UserEntity";
 
 @Injectable()
-export class UsersService {
+export class UserService {
 	@InjectRepository(User)
-	private usersRepository: Repository<User>;
+	private userRepository: Repository<User>;
 
 	async findOne(id: number): Promise<User | undefined> {
-		const user = await this.usersRepository.findOneBy({ id });
+		const user = await this.userRepository.findOneBy({ id });
 		if (!user) {
 			throw new NotFoundException(`User with id ${id} not found`);
 		}
@@ -19,7 +19,7 @@ export class UsersService {
 	}
 
 	async findOneByUsername(username: string): Promise<User | undefined> {
-		const user = await this.usersRepository.findOneBy({ email: username });
+		const user = await this.userRepository.findOneBy({ email: username });
 		if (!user) {
 			throw new NotFoundException(`User with username ${username} not found`);
 		}
@@ -27,17 +27,17 @@ export class UsersService {
 	}
 
 	async findAll(): Promise<User[]> {
-		return this.usersRepository.find();
+		return this.userRepository.find();
 	}
 
 	async create(user: User): Promise<User> {
 		const hashedPassword = await this.hashPassword(user.password);
 		user.password = hashedPassword;
-		return this.usersRepository.save(user);
+		return this.userRepository.save(user);
 	}
 
 	async delete(id: number): Promise<void> {
-		await this.usersRepository.delete(id);
+		await this.userRepository.delete(id);
 	}
 
 	async validatePassword(

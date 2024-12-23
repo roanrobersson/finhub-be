@@ -2,7 +2,7 @@ import { Controller, Get } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
 @Controller("permissions")
-export class PermissionsController {
+export class PermissionController {
 	@Get()
 	@ApiOperation({ summary: "List all permissions" })
 	findAll() {

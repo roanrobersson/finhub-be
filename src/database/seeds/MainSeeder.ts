@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import { runSeeder, Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import PermissionSeeder from "./permission.seeder";
-import RoleSeeder from "./role.seeder";
+import PermissionSeeder from "./PermissionSeeder";
+import RoleSeeder from "./RoleSeeder";
 
 export default class MainSeeder implements Seeder {
 	public async run(
