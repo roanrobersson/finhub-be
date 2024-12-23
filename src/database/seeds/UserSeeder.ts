@@ -1,9 +1,9 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Role } from "../../modules/roles/RoleEntity";
-import { User } from "../../modules/users/UserEntity";
-import { UserService } from "../../modules/users/UserService";
+import { Role } from "../../modules/role/RoleEntity";
+import { User } from "../../modules/user/UserEntity";
+import { UserService } from "../../modules/user/UserService";
 import { DefaultRoleNameEnum } from "./RoleSeeder";
 
 export default class UserSeeder implements Seeder {

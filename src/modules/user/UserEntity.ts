@@ -7,7 +7,7 @@ import {
 	Unique
 } from "typeorm";
 
-import { Role } from "../roles/RoleEntity";
+import { Role } from "../role/RoleEntity";
 
 @Entity()
 export class User {
