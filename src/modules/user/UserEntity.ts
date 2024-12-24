@@ -7,10 +7,11 @@ import {
 	Unique
 } from "typeorm";
 
+import { BaseEntity } from "../../core/BaseEntity";
 import { Role } from "../role/RoleEntity";
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -29,27 +30,32 @@ export class User {
 
 	@ManyToMany(() => Role, { cascade: true })
 	@JoinTable({ name: "user_roles" })
-	private roles: Role[];
+	private roles: Promise<Role[]>;
 
 	constructor(name: string, email: string, password: string) {
+		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;
 	}
 
-	addRole(role: Role) {
-		if (!this.roles) {
-			this.roles = [];
-		}
-		if (!this.roles.includes(role)) {
-			this.roles.push(role);
+	isNew(): boolean {
+		return !this.id;
+	}
+
+	async getRoles(): Promise<Role[]> {
+		return this.roles;
+	}
+
+	async addRole(role: Role) {
+		const roles = (await this.roles) ?? [];
+		if (!roles.find((p) => p.id === role.id)) {
+			this.roles = Promise.resolve([...roles, role]);
 		}
 	}
 
-	removeRole(role: Role) {
-		if (!this.roles) {
-			return;
-		}
-		this.roles.filter((r) => r.id !== role.id);
+	async removeRole(role: Role) {
+		const roles = (await this.roles) ?? [];
+		this.roles = Promise.resolve(roles.filter((p) => p.id !== role.id));
 	}
 }

@@ -10,15 +10,18 @@ export class UserService {
 	@InjectRepository(User)
 	private userRepository: Repository<User>;
 
-	async findOne(id: number): Promise<User | undefined> {
-		const user = await this.userRepository.findOneBy({ id });
+	async getById(id: number): Promise<User> {
+		const user = await this.userRepository.findOne({
+			where: { id },
+			relations: ["roles", "roles.permissions"]
+		});
 		if (!user) {
 			throw new NotFoundException(`User with id ${id} not found`);
 		}
 		return user;
 	}
 
-	async findOneByUsername(username: string): Promise<User | undefined> {
+	async findOneByUsername(username: string): Promise<User> {
 		const user = await this.userRepository.findOneBy({ email: username });
 		if (!user) {
 			throw new NotFoundException(`User with username ${username} not found`);
@@ -26,17 +29,19 @@ export class UserService {
 		return user;
 	}
 
-	async findAll(): Promise<User[]> {
+	async getAll(): Promise<User[]> {
 		return this.userRepository.find();
 	}
 
-	async create(user: User): Promise<User> {
-		const hashedPassword = await UserService.hashPassword(user.password);
-		user.password = hashedPassword;
+	async save(user: User): Promise<User> {
+		if (user.isNew()) {
+			const hashedPassword = await UserService.hashPassword(user.password);
+			user.password = hashedPassword;
+		}
 		return this.userRepository.save(user);
 	}
 
-	async delete(id: number): Promise<void> {
+	async remove(id: number): Promise<void> {
 		await this.userRepository.delete(id);
 	}
 

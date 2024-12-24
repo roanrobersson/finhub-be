@@ -1,9 +1,9 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Role } from "../../modules/role/RoleEntity";
-import { User } from "../../modules/user/UserEntity";
-import { UserService } from "../../modules/user/UserService";
+import { Role } from "../../src/modules/role/RoleEntity";
+import { User } from "../../src/modules/user/UserEntity";
+import { UserService } from "../../src/modules/user/UserService";
 import { DefaultRoleNameEnum } from "./RoleSeeder";
 
 export default class UserSeeder implements Seeder {
@@ -14,10 +14,10 @@ export default class UserSeeder implements Seeder {
 		const userRepository = dataSource.getRepository(User);
 		const roleRepository = dataSource.getRepository(Role);
 
-		const adminRole = await roleRepository.findOneBy({
+		const adminRole = await roleRepository.findOneByOrFail({
 			name: DefaultRoleNameEnum.ADMIN
 		});
-		const userRole = await roleRepository.findOneBy({
+		const userRole = await roleRepository.findOneByOrFail({
 			name: DefaultRoleNameEnum.USER
 		});
 

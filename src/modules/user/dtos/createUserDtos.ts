@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { IsEmail, IsNotEmpty } from "class-validator";
 
-export class CreateUserDto {
+export class CreateUserBodyDto {
 	@IsNotEmpty()
 	@ApiProperty({ description: "The name of the user", example: "Pedro" })
 	name: string;
@@ -19,4 +20,15 @@ export class CreateUserDto {
 		example: "12345678"
 	})
 	password: string;
+}
+
+export class CreateUserResponseDto {
+	@Expose()
+	id: number;
+
+	@Expose()
+	name: string;
+
+	@Expose()
+	email: string;
 }

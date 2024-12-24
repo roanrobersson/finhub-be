@@ -4,7 +4,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { databaseConfig } from "./database/config";
+import { databaseConfig } from "../database/config";
 import { AuthModule } from "./modules/auth/AuthModule";
 import { RoleModule } from "./modules/role/RoleModule";
 import { UserModule } from "./modules/user/UserModule";

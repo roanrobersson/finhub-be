@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Permission } from "../../modules/role/PermissionEntity";
-import { Role } from "../../modules/role/RoleEntity";
+import { Permission } from "../../src/modules/permission/PermissionEntity";
+import { Role } from "../../src/modules/role/RoleEntity";
 import { DefaultPermissionNameEnum } from "./PermissionSeeder";
 
 export default class RoleSeeder implements Seeder {
@@ -25,16 +25,12 @@ export default class RoleSeeder implements Seeder {
 		);
 
 		const adminRole = new Role(DefaultRoleNameEnum.ADMIN, "Administrator");
-		adminRole.addPermission(queryUsersRolesPermission);
-		adminRole.addPermission(editUsersRolesPermission);
-
-		const testRole = new Role(DefaultRoleNameEnum.TEST, "Test");
-		testRole.addPermission(queryUsersRolesPermission);
-		testRole.addPermission(editUsersRolesPermission);
+		await adminRole.addPermission(queryUsersRolesPermission);
+		await adminRole.addPermission(editUsersRolesPermission);
 
 		const userRole = new Role(DefaultRoleNameEnum.USER, "Regular user");
 
-		const roles = [adminRole, testRole, userRole];
+		const roles = [adminRole, userRole];
 
 		for (const role of roles) {
 			const exists = await roleRepository.existsBy({ name: role.name });
