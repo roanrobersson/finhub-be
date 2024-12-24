@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumberString } from "class-validator";
+import { Id } from "src/core/decorators/IdDecorator";
 
-export class FindOneParams {
+export class DeleteUserParams {
+	@Id()
 	@ApiProperty({
 		description: "The id of the user",
 		example: 1
 	})
-	@IsNumberString()
-	id: number;
+	userId: number;
 }

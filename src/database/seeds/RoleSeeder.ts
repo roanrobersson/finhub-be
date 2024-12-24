@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Permission } from "../../modules/role/PermissionEntity";
+import { Permission } from "../../modules/permission/PermissionEntity";
 import { Role } from "../../modules/role/RoleEntity";
 import { DefaultPermissionNameEnum } from "./PermissionSeeder";
 
