@@ -24,10 +24,10 @@ export class RolePermissionController {
 	async associate(
 		@Param() params: AssociateRolePermissionParams
 	): Promise<void> {
-		await this.roleService.associatePermission(
-			params.roleId,
-			params.permissionId
-		);
+		// await this.roleService.associatePermission(
+		// 	params.roleId,
+		// 	params.permissionId
+		// );
 	}
 
 	@Delete(":permissionId")
@@ -36,9 +36,9 @@ export class RolePermissionController {
 	async disassociate(
 		@Param() params: DesassociateRolePermissionParams
 	): Promise<void> {
-		await this.roleService.disassociatePermission(
-			params.roleId,
-			params.permissionId
-		);
+		// await this.roleService.disassociatePermission(
+		// 	params.roleId,
+		// 	params.permissionId
+		// );
 	}
 }

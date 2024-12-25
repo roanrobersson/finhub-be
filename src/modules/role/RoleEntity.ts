@@ -1,38 +1,26 @@
-import {
-	Column,
-	Entity,
-	JoinTable,
-	ManyToMany,
-	PrimaryGeneratedColumn,
-	Unique
-} from "typeorm";
-
-import { BaseEntity } from "../../core/BaseEntity";
 import { Permission } from "../permission/PermissionEntity";
 
-@Entity()
-export class Role extends BaseEntity {
-	@PrimaryGeneratedColumn()
+export class Role {
 	id: number;
 
-	@Column()
-	@Unique(["name"])
 	name: string;
 
-	@Column()
 	description: string;
 
-	@ManyToMany(() => Permission, {
-		cascade: true
-	})
-	@JoinTable({ name: "role_permissions" })
+	// @ManyToMany(() => Permission, {
+	// 	cascade: true
+	// })
+	// @JoinTable({ name: "role_permissions" })
 	private permissions: Promise<Permission[]>;
 
 	constructor(name: string, description: string) {
-		super();
 		this.name = name;
 		this.description = description;
 	}
+
+	isNew = () => {
+		return !this.id;
+	};
 
 	async getPermissions(): Promise<Permission[]> {
 		return this.permissions;

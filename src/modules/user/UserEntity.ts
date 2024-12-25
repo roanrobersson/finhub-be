@@ -1,39 +1,19 @@
-import {
-	Column,
-	Entity,
-	JoinTable,
-	ManyToMany,
-	PrimaryGeneratedColumn,
-	Unique
-} from "typeorm";
-
-import { BaseEntity } from "../../core/BaseEntity";
 import { Role } from "../role/RoleEntity";
 
-@Entity()
-export class User extends BaseEntity {
-	@PrimaryGeneratedColumn()
+export class User {
 	id: number;
 
-	@Column()
 	name: string;
 
-	@Column()
-	@Unique(["email"])
 	email: string;
 
-	@Column()
 	password: string;
 
-	@Column({ default: true })
 	isActive: boolean;
 
-	@ManyToMany(() => Role, { cascade: true })
-	@JoinTable({ name: "user_roles" })
 	private roles: Promise<Role[]>;
 
 	constructor(name: string, email: string, password: string) {
-		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;

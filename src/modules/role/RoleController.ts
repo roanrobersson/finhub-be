@@ -7,8 +7,7 @@ import {
 	HttpStatus,
 	Inject,
 	Param,
-	Post,
-	Put
+	Post
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
@@ -23,11 +22,6 @@ import {
 	GetRoleByIdParamsDto,
 	GetRoleByIdResponseDto
 } from "./dtos/getRoleByIdDtos";
-import {
-	UpdateRoleBodyDto,
-	UpdateRoleParamsDto,
-	UpdateRoleResponseDto
-} from "./dtos/updateRoleDtos";
 import { Role } from "./RoleEntity";
 import { RoleService } from "./RoleService";
 
@@ -51,9 +45,10 @@ export class RoleController {
 		@Param() params: GetRoleByIdParamsDto
 	): Promise<GetRoleByIdResponseDto> {
 		const role = await this.roleService.getById(params.roleId);
-		return plainToInstance(GetRoleByIdResponseDto, role, {
-			excludeExtraneousValues: true
-		});
+		// return plainToInstance(GetRoleByIdResponseDto, role, {
+		// 	excludeExtraneousValues: true
+		// });
+		return role;
 	}
 
 	@Post()
@@ -63,26 +58,27 @@ export class RoleController {
 	): Promise<CreateRoleResponseDto> {
 		let role = new Role(body.name, body.description);
 		role = await this.roleService.save(role);
-		return plainToInstance(CreateRoleResponseDto, role, {
-			excludeExtraneousValues: true
-		});
+		return role;
+		// return plainToInstance(CreateRoleResponseDto, role, {
+		// 	excludeExtraneousValues: true
+		// });
 	}
 
-	@Put(":roleId")
-	@HttpCode(HttpStatus.NO_CONTENT)
-	@ApiOperation({ summary: "Update a role by id" })
-	async update(
-		@Param() params: UpdateRoleParamsDto,
-		@Body() body: UpdateRoleBodyDto
-	): Promise<UpdateRoleResponseDto> {
-		let role = await this.roleService.getById(params.roleId);
-		role.name = body.name;
-		role.description = body.description;
-		role = await this.roleService.save(role);
-		return plainToInstance(UpdateRoleResponseDto, role, {
-			excludeExtraneousValues: true
-		});
-	}
+	// @Put(":roleId")
+	// @HttpCode(HttpStatus.NO_CONTENT)
+	// @ApiOperation({ summary: "Update a role by id" })
+	// async update(
+	// 	@Param() params: UpdateRoleParamsDto,
+	// 	@Body() body: UpdateRoleBodyDto
+	// ): Promise<UpdateRoleResponseDto> {
+	// 	let role = await this.roleService.getById(params.roleId);
+	// 	role.name = body.name;
+	// 	role.description = body.description;
+	// 	role = await this.roleService.save(role);
+	// 	return plainToInstance(UpdateRoleResponseDto, role, {
+	// 		excludeExtraneousValues: true
+	// 	});
+	// }
 
 	@Delete(":roleId")
 	@HttpCode(HttpStatus.NO_CONTENT)

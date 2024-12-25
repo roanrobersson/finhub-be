@@ -1,18 +1,22 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { PermissionController } from "src/modules/permission/PermissionController";
-import { Permission } from "src/modules/permission/PermissionEntity";
+import { DrizzleModule } from "database/DrizzleModule";
 import { PermissionService } from "src/modules/permission/PermissionService";
 
+import { PermissionRepository } from "../permission/PermissionRepository";
 import { RoleController } from "./RoleController";
-import { Role } from "./RoleEntity";
 import { RolePermissionController } from "./RolePermissionController";
+import { RoleRepository } from "./RoleRepository";
 import { RoleService } from "./RoleService";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Permission, Role])],
-	controllers: [PermissionController, RoleController, RolePermissionController],
-	providers: [PermissionService, RoleService],
-	exports: [PermissionService, RoleService]
+	imports: [DrizzleModule],
+	controllers: [RoleController, RolePermissionController],
+	providers: [
+		PermissionService,
+		PermissionRepository,
+		RoleService,
+		RoleRepository
+	],
+	exports: [PermissionService]
 })
 export class RoleModule {}
