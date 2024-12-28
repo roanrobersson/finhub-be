@@ -4,8 +4,9 @@ import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { databaseConfig } from "./database/config";
+import { databaseConfig } from "../database/config";
 import { AuthModule } from "./modules/auth/AuthModule";
+import { PermissionModule } from "./modules/permission/PermissionModule";
 import { RoleModule } from "./modules/role/RoleModule";
 import { UserModule } from "./modules/user/UserModule";
 
@@ -14,8 +15,6 @@ import { UserModule } from "./modules/user/UserModule";
 		ConfigModule.forRoot({
 			isGlobal: true
 		}),
-		AuthModule,
-		UserModule,
 		ThrottlerModule.forRoot([
 			{
 				ttl: 60000,
@@ -23,7 +22,10 @@ import { UserModule } from "./modules/user/UserModule";
 			}
 		]),
 		TypeOrmModule.forRootAsync(databaseConfig),
-		RoleModule
+		AuthModule,
+		UserModule,
+		RoleModule,
+		PermissionModule
 	],
 	controllers: [],
 	providers: [

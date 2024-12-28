@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
-import { Permission } from "../../modules/role/PermissionEntity";
+import { Permission } from "../../src/modules/permission/PermissionEntity";
 
 export default class PermissionSeeder implements Seeder {
 	public async run(
@@ -11,11 +11,11 @@ export default class PermissionSeeder implements Seeder {
 		const repository = dataSource.getRepository(Permission);
 
 		const queryUsersRolesPermission = new Permission(
-			DefaultPermissionNameEnum.QUERY_USERS_ROLES_PERMISSIONS,
+			DefaultPermissionName.QUERY_USERS_ROLES_PERMISSIONS,
 			"Allows to query users, roles and permissions"
 		);
 		const editUsersRolesPermission = new Permission(
-			DefaultPermissionNameEnum.EDIT_USERS_ROLES_PERMISSIONS,
+			DefaultPermissionName.EDIT_USERS_ROLES_PERMISSIONS,
 			"Allows to edit users, roles and permissions"
 		);
 
@@ -32,7 +32,7 @@ export default class PermissionSeeder implements Seeder {
 	}
 }
 
-export enum DefaultPermissionNameEnum {
+export enum DefaultPermissionName {
 	QUERY_USERS_ROLES_PERMISSIONS = "QUERY_USERS_ROLES_PERMISSIONS",
 	EDIT_USERS_ROLES_PERMISSIONS = "EDIT_USERS_ROLES_PERMISSIONS"
 }

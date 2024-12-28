@@ -4,6 +4,9 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 
 import { AppModule } from "./AppModule";
+import { BusinessExceptionFilter } from "./core/filters/BusinessExceptionFilter";
+import { HttpExceptionFilter } from "./core/filters/HttpExceptionFilter";
+import { UnhandledExceptionFilter } from "./core/filters/UnhandledExceptionFilter";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -11,6 +14,12 @@ async function bootstrap() {
 	app.use(helmet());
 
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+	app.useGlobalFilters(
+		new UnhandledExceptionFilter(), // This filter should be the first one
+		new HttpExceptionFilter(),
+		new BusinessExceptionFilter()
+	);
 
 	const config = new DocumentBuilder()
 		.setTitle("FinHub")

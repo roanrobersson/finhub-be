@@ -1,5 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { EntityNotFoundException } from "src/core/exceptions/EntityNotFoundException";
 
 import { UserService } from "../user/UserService";
 
@@ -15,24 +16,35 @@ export class AuthService {
 		username: string,
 		password: string
 	): Promise<{ access_token: string; refresh_token: string }> {
-		const user = await this.userService.findOneByUsername(username);
-		if (!(await UserService.validatePassword(password, user.password))) {
-			throw new UnauthorizedException();
+		try {
+			const user = await this.userService.findOneByUsername(username);
+			const isValidPassword = await UserService.validatePassword(
+				password,
+				user.password
+			);
+			if (isValidPassword) {
+				throw new UnauthorizedException();
+			}
+
+			const payload = { sub: user.id, username: user.email };
+			const access_token = await this.jwtService.signAsync(payload, {
+				expiresIn: process.env.JWT_EXPIRATION_TIME || "15m"
+			});
+
+			const refresh_token = await this.jwtService.signAsync(payload, {
+				expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || "7d"
+			});
+
+			return {
+				access_token,
+				refresh_token
+			};
+		} catch (error) {
+			if (error instanceof EntityNotFoundException) {
+				throw new UnauthorizedException();
+			}
+			throw error;
 		}
-
-		const payload = { sub: user.id, username: user.email };
-		const access_token = await this.jwtService.signAsync(payload, {
-			expiresIn: process.env.JWT_EXPIRATION_TIME || "15m"
-		});
-
-		const refresh_token = await this.jwtService.signAsync(payload, {
-			expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || "7d"
-		});
-
-		return {
-			access_token,
-			refresh_token
-		};
 	}
 
 	async refreshAccessToken(

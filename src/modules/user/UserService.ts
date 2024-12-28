@@ -1,43 +1,68 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Inject, Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
-import { Repository } from "typeorm";
+import { UniqueException } from "src/core/exceptions/UniqueException";
 
+import { UserNotFoundException } from "./exceptions/UserNotFoundException";
 import { User } from "./UserEntity";
+import { UserRepository } from "./UserRepository";
 
 @Injectable()
 export class UserService {
-	@InjectRepository(User)
-	private userRepository: Repository<User>;
+	@Inject()
+	private userRepository: UserRepository;
 
-	async findOne(id: number): Promise<User | undefined> {
-		const user = await this.userRepository.findOneBy({ id });
-		if (!user) {
-			throw new NotFoundException(`User with id ${id} not found`);
-		}
-		return user;
-	}
-
-	async findOneByUsername(username: string): Promise<User | undefined> {
-		const user = await this.userRepository.findOneBy({ email: username });
-		if (!user) {
-			throw new NotFoundException(`User with username ${username} not found`);
-		}
-		return user;
-	}
-
-	async findAll(): Promise<User[]> {
+	async getAll(): Promise<User[]> {
 		return this.userRepository.find();
 	}
 
-	async create(user: User): Promise<User> {
-		const hashedPassword = await UserService.hashPassword(user.password);
-		user.password = hashedPassword;
-		return this.userRepository.save(user);
+	async getById(id: number): Promise<User> {
+		const user = await this.userRepository.findOne({
+			where: { id },
+			relations: ["roles", "roles.permissions"]
+		});
+		if (!user) {
+			throw new UserNotFoundException(id);
+		}
+		return user;
 	}
 
-	async delete(id: number): Promise<void> {
+	async findOneByUsername(username: string): Promise<User> {
+		const user = await this.userRepository.findOneBy({
+			email: username
+		});
+		if (!user) {
+			throw new UserNotFoundException(
+				null,
+				`User with email ${username} not found`
+			);
+		}
+		return user;
+	}
+
+	async save(user: User): Promise<User> {
+		await this.validateUniqueUser(user);
+		if (user.isNew()) {
+			const hashedPassword = await UserService.hashPassword(user.password);
+			user.password = hashedPassword;
+		}
+		return await this.userRepository.save(user);
+	}
+
+	async remove(id: number): Promise<void> {
 		await this.userRepository.delete(id);
+	}
+
+	async validateUniqueUser(user: User) {
+		const isInsert = user.isNew();
+		const existingUser = await this.userRepository.findOneBy({
+			email: user.email
+		});
+		if (!existingUser) {
+			return;
+		}
+		if (isInsert || existingUser.id !== user.id) {
+			throw new UniqueException(`User with email ${user.email} already exists`);
+		}
 	}
 
 	static async validatePassword(
