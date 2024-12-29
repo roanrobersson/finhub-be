@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
-import * as bcrypt from "bcrypt";
 import { UniqueException } from "src/core/exceptions/UniqueException";
+import { hashPassword } from "src/core/utils/passwordUtils";
 
 import { UserNotFoundException } from "./exceptions/UserNotFoundException";
 import { User } from "./UserEntity";
@@ -42,7 +42,7 @@ export class UserService {
 	async save(user: User): Promise<User> {
 		await this.validateUniqueUser(user);
 		if (user.isNew()) {
-			const hashedPassword = await UserService.hashPassword(user.password);
+			const hashedPassword = await hashPassword(user.password);
 			user.password = hashedPassword;
 		}
 		return await this.userRepository.save(user);
@@ -63,17 +63,5 @@ export class UserService {
 		if (isInsert || existingUser.id !== user.id) {
 			throw new UniqueException(`User with email ${user.email} already exists`);
 		}
-	}
-
-	static async validatePassword(
-		plainPassword: string,
-		hashedPassword: string
-	): Promise<boolean> {
-		return bcrypt.compare(plainPassword, hashedPassword);
-	}
-
-	static async hashPassword(password: string): Promise<string> {
-		const saltRounds = 10;
-		return bcrypt.hash(password, saltRounds);
 	}
 }

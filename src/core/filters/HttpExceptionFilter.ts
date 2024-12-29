@@ -3,9 +3,7 @@ import {
 	BadRequestException,
 	Catch,
 	ExceptionFilter,
-	HttpException,
-	HttpStatus,
-	NotFoundException
+	HttpException
 } from "@nestjs/common";
 import { Request, Response } from "express";
 
@@ -18,12 +16,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
 
-		if (exception instanceof BadRequestException) {
-			const statusCode = HttpStatus.BAD_REQUEST;
+		// Default error handler
+		if (exception instanceof HttpException) {
+			const statusCode = exception.getStatus();
 			const problem = new Problem();
 
 			problem.statusCode = statusCode;
-			problem.title = "Bad request";
+			problem.title = this.getTitle(exception);
 			problem.description = this.getDescription(exception);
 			problem.timeStamp = new Date().toISOString();
 			problem.method = request.method;
@@ -33,37 +32,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			response.status(statusCode).json(problem);
 			return;
 		}
-
-		if (exception instanceof NotFoundException) {
-			const statusCode = HttpStatus.NOT_FOUND;
-			const problem = new Problem();
-
-			problem.statusCode = statusCode;
-			problem.title = "Resource not found";
-			problem.description = this.getDescription(exception);
-			problem.timeStamp = new Date().toISOString();
-			problem.method = request.method;
-			problem.path = request.url;
-
-			response.status(statusCode).json(problem);
-			return;
-		}
-
-		// Default error handler
-		if (exception instanceof HttpException) {
-			const statusCode = exception.getStatus();
-			const problem = new Problem();
-
-			problem.statusCode = statusCode;
-			problem.title = exception.message;
-			problem.timeStamp = new Date().toISOString();
-			problem.method = request.method;
-			problem.path = request.url;
-
-			response.status(statusCode).json(problem);
-			return;
-		}
 	}
+
+	private getTitle = (exception: HttpException): string => {
+		const data = exception.getResponse();
+		if (typeof data === "string") {
+			return data;
+		}
+		if (
+			typeof data === "object" &&
+			"error" in data &&
+			typeof data.error === "string"
+		) {
+			return data.error;
+		}
+		return "";
+	};
 
 	private getDescription = (exception: BadRequestException): string | null => {
 		const data = exception.getResponse();

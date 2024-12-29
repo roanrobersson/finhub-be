@@ -1,6 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { EntityNotFoundException } from "src/core/exceptions/EntityNotFoundException";
+import { isPasswordValid } from "src/core/utils/passwordUtils";
 
 import { UserService } from "../user/UserService";
 
@@ -18,11 +19,9 @@ export class AuthService {
 	): Promise<{ access_token: string; refresh_token: string }> {
 		try {
 			const user = await this.userService.findOneByUsername(username);
-			const isValidPassword = await UserService.validatePassword(
-				password,
-				user.password
-			);
-			if (isValidPassword) {
+			const isValidPassword = await isPasswordValid(password, user.password);
+
+			if (!isValidPassword) {
 				throw new UnauthorizedException();
 			}
 

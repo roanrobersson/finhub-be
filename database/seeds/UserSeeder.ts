@@ -1,9 +1,9 @@
+import { hashPassword } from "src/core/utils/passwordUtils";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
 import { Role } from "../../src/modules/role/RoleEntity";
 import { User } from "../../src/modules/user/UserEntity";
-import { UserService } from "../../src/modules/user/UserService";
 import { DefaultRoleName } from "./RoleSeeder";
 
 export default class UserSeeder implements Seeder {
@@ -24,21 +24,21 @@ export default class UserSeeder implements Seeder {
 		const adminUser = new User(
 			"Admin",
 			"admin@gmail.com",
-			await UserService.hashPassword("admin")
+			await hashPassword("admin")
 		);
 		adminUser.addRole(adminRole);
 
 		const felipeUser = new User(
 			"Marcos",
 			"marcos@gmail.com",
-			await UserService.hashPassword("marcos")
+			await hashPassword("marcos")
 		);
 		felipeUser.addRole(userRole);
 
 		const mariaUser = new User(
 			"Maria",
 			"maria@gmail.com",
-			await UserService.hashPassword("maria")
+			await hashPassword("maria")
 		);
 		mariaUser.addRole(userRole);
 
