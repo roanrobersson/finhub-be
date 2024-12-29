@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
-import { Id } from "src/core/decorators/IdDecorator";
+import { IsId } from "src/core/decorators/IsIdDecorator";
 
 export class UpdateUserParamsDto {
-	@Id()
+	@IsId()
 	@ApiProperty({
 		description: "The id of the user",
 		example: 1

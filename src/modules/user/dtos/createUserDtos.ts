@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsPassword } from "src/core/decorators/IsPasswordValidDecorator";
 
 export class CreateUserBodyDto {
 	@IsNotEmpty()
@@ -15,11 +16,21 @@ export class CreateUserBodyDto {
 	email: string;
 
 	@IsNotEmpty()
+	@IsPassword()
 	@ApiProperty({
 		description: "The password of the user",
 		example: "12345678"
 	})
 	password: string;
+}
+
+export class ChangeUserPasswordBodyDto {
+	@IsNotEmpty()
+	@ApiProperty({
+		description: "The new password",
+		example: "87654321"
+	})
+	newPassword: string;
 }
 
 export class CreateUserResponseDto {

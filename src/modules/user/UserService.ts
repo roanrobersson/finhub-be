@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { BusinessException } from "src/core/exceptions/BusinessException";
 import { UniqueException } from "src/core/exceptions/UniqueException";
-import { hashPassword } from "src/core/utils/passwordUtils";
+import { hashPassword, isPasswordValid } from "src/core/utils/passwordUtils";
 
 import { UserNotFoundException } from "./exceptions/UserNotFoundException";
 import { User } from "./UserEntity";
@@ -46,6 +47,23 @@ export class UserService {
 			user.password = hashedPassword;
 		}
 		return await this.userRepository.save(user);
+	}
+
+	async changePassword(
+		id: number,
+		currentPassword: string,
+		newPassword: string
+	): Promise<void> {
+		const user = await this.getById(id);
+		const isCurrentPasswordValid = await isPasswordValid(
+			currentPassword,
+			user.password
+		);
+		if (!isCurrentPasswordValid) {
+			throw new BusinessException("Current password is incorrect");
+		}
+		user.password = await hashPassword(newPassword);
+		await this.userRepository.save(user);
 	}
 
 	async remove(id: number): Promise<void> {

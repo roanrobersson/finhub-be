@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { Id } from "src/core/decorators/IdDecorator";
+import { IsId } from "src/core/decorators/IsIdDecorator";
 
 export class GetPermissionByIdParams {
-	@Id()
+	@IsId()
 	@ApiProperty({
 		description: "The id of the permission",
 		example: 1

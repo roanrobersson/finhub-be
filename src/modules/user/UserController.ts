@@ -14,6 +14,10 @@ import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { Public } from "src/modules/auth/AuthGuard";
 
 import {
+	ChangeUserPasswordBodyDto,
+	ChangeUserPasswordParamsDto
+} from "./dtos/changeUserPassword";
+import {
 	CreateUserBodyDto,
 	CreateUserResponseDto
 } from "./dtos/createUserDtos";
@@ -83,6 +87,20 @@ export class UserController {
 		// 	excludeExtraneousValues: true
 		// });
 		return user;
+	}
+
+	@Put(":userId/change-password")
+	@HttpCode(HttpStatus.NO_CONTENT)
+	@ApiOperation({ summary: "Update a user by id" })
+	async changePassword(
+		@Param() params: ChangeUserPasswordParamsDto,
+		@Body() body: ChangeUserPasswordBodyDto
+	): Promise<void> {
+		return this.userService.changePassword(
+			params.userId,
+			body.currentPassword,
+			body.newPassword
+		);
 	}
 
 	@Delete(":userId")

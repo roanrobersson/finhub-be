@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Id } from "src/core/decorators/IdDecorator";
+import { IsId } from "src/core/decorators/IsIdDecorator";
 
 export class DeleteUserParams {
-	@Id()
+	@IsId()
 	@ApiProperty({
 		description: "The id of the user",
 		example: 1
