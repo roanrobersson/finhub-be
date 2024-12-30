@@ -2,6 +2,10 @@ import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
+import {
+	initializeTransactionalContext,
+	StorageDriver
+} from "typeorm-transactional";
 
 import { AppModule } from "./AppModule";
 import { BusinessExceptionFilter } from "./core/filters/BusinessExceptionFilter";
@@ -9,6 +13,8 @@ import { HttpExceptionFilter } from "./core/filters/HttpExceptionFilter";
 import { UnhandledExceptionFilter } from "./core/filters/UnhandledExceptionFilter";
 
 async function bootstrap() {
+	initializeTransactionalContext({ storageDriver: StorageDriver.AUTO }); // Should be called before all
+
 	const app = await NestFactory.create(AppModule);
 
 	app.use(helmet());
@@ -16,7 +22,7 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
 	app.useGlobalFilters(
-		new UnhandledExceptionFilter(), // This filter should be the first one
+		new UnhandledExceptionFilter(), // Should be the first one
 		new HttpExceptionFilter(),
 		new BusinessExceptionFilter()
 	);

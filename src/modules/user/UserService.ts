@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { BusinessException } from "src/core/exceptions/BusinessException";
 import { UniqueException } from "src/core/exceptions/UniqueException";
 import { hashPassword, isPasswordValid } from "src/core/utils/passwordUtils";
+import { Transactional } from "typeorm-transactional";
 
 import { UserNotFoundException } from "./exceptions/UserNotFoundException";
 import { User } from "./UserEntity";
@@ -40,6 +41,7 @@ export class UserService {
 		return user;
 	}
 
+	@Transactional()
 	async save(user: User): Promise<User> {
 		await this.validateUniqueUser(user);
 		if (user.isNew()) {
@@ -49,6 +51,7 @@ export class UserService {
 		return await this.userRepository.save(user);
 	}
 
+	@Transactional()
 	async changePassword(
 		id: number,
 		currentPassword: string,

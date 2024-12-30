@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { UniqueException } from "src/core/exceptions/UniqueException";
 import { PermissionService } from "src/modules/permission/PermissionService";
+import { Transactional } from "typeorm-transactional";
 
 import { RoleNotFoundException } from "./exceptions/RoleNotFoundException";
 import { Role } from "./RoleEntity";
@@ -29,6 +30,7 @@ export class RoleService {
 		return role;
 	}
 
+	@Transactional()
 	async save(role: Role): Promise<Role> {
 		await this.validateUniqueRole(role);
 		return await this.roleRepository.save(role);
@@ -38,6 +40,7 @@ export class RoleService {
 		await this.roleRepository.delete(id);
 	}
 
+	@Transactional()
 	async associatePermission(
 		roleId: number,
 		permissionId: number
@@ -48,6 +51,7 @@ export class RoleService {
 		await this.roleRepository.save(role);
 	}
 
+	@Transactional()
 	async disassociatePermission(
 		roleId: number,
 		permissionId: number
