@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { EntityNotFoundException } from "src/core/exceptions/EntityNotFoundException";
 import { isPasswordValid } from "src/core/utils/passwordUtils";
 
+import { User } from "../user/UserEntity";
 import { UserService } from "../user/UserService";
 
 @Injectable()
@@ -12,6 +13,10 @@ export class AuthService {
 
 	@Inject(JwtService)
 	private jwtService: JwtService;
+
+	private readonly jwtExpirationTime = process.env.JWT_EXPIRATION_TIME || "15m";
+	private readonly jwtRefreshTokenExpirationTime =
+		process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || "7d";
 
 	async signIn(
 		username: string,
@@ -25,13 +30,14 @@ export class AuthService {
 				throw new UnauthorizedException();
 			}
 
-			const payload = { sub: user.id, username: user.email };
+			const payload = await this.buildPayload(user);
+
 			const access_token = await this.jwtService.signAsync(payload, {
-				expiresIn: process.env.JWT_EXPIRATION_TIME || "15m"
+				expiresIn: this.jwtExpirationTime
 			});
 
 			const refresh_token = await this.jwtService.signAsync(payload, {
-				expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || "7d"
+				expiresIn: this.jwtRefreshTokenExpirationTime
 			});
 
 			return {
@@ -57,14 +63,26 @@ export class AuthService {
 				throw new UnauthorizedException("Invalid user.");
 			}
 
-			const newAccessToken = await this.jwtService.signAsync(
-				{ sub: user.id, username: user.email },
-				{ expiresIn: process.env.JWT_EXPIRATION_TIME || "15m" }
-			);
+			const newPayload = await this.buildPayload(user);
+
+			const newAccessToken = await this.jwtService.signAsync(newPayload, {
+				expiresIn: this.jwtExpirationTime
+			});
 
 			return { access_token: newAccessToken };
 		} catch (err) {
 			throw new UnauthorizedException("Invalid or expired refresh token.");
 		}
+	}
+
+	private async buildPayload(user: User) {
+		const roles = await user.getRoles();
+		const permissions = await user.getPermissions();
+		return {
+			sub: user.id,
+			username: user.email,
+			roles: roles.map((role) => role.name),
+			permissions: permissions.map((permission) => permission.name)
+		};
 	}
 }
