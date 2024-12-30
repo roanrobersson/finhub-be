@@ -26,16 +26,6 @@ export class Role extends BaseEntity {
 	@JoinTable({ name: "role_permissions" })
 	private permissions: Promise<Permission[]>;
 
-	constructor(name: string, description: string) {
-		super();
-		this.name = name;
-		this.description = description;
-	}
-
-	isNew = () => {
-		return !this.id;
-	};
-
 	async getPermissions(): Promise<Permission[]> {
 		return this.permissions;
 	}
@@ -53,4 +43,12 @@ export class Role extends BaseEntity {
 			permissions.filter((p) => p.id !== permission.id)
 		);
 	}
+
+	isNew = () => {
+		return !this.id;
+	};
+
+	equals = (role: Role): boolean => {
+		return this.id === role.id;
+	};
 }

@@ -1,6 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsId } from "src/core/decorators/IsIdDecorator";
 
+import {
+	SimplifiedPermissionResponseDto,
+	SimplifiedRoleResponseDto
+} from "./commonDtos";
+
 export class GetUserByIdParams {
 	@IsId()
 	@ApiProperty({
@@ -28,4 +33,8 @@ export class GetUserByIdResponseDto {
 		example: "pedro@gmail.com"
 	})
 	email: string;
+
+	roles: SimplifiedRoleResponseDto[];
+
+	permissions: SimplifiedPermissionResponseDto[];
 }

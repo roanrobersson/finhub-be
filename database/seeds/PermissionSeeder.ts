@@ -11,14 +11,18 @@ export default class PermissionSeeder implements Seeder {
 	): Promise<any> {
 		const repository = dataSource.getRepository(Permission);
 
-		const queryUsersRolesPermission = new Permission(
-			PermissionEnum.QUERY_USERS_ROLES_PERMISSIONS,
-			"Allows to query users, roles and permissions"
-		);
-		const editUsersRolesPermission = new Permission(
-			PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS,
-			"Allows to edit users, roles and permissions"
-		);
+		const queryUsersRolesPermission = new Permission();
+		queryUsersRolesPermission.name =
+			PermissionEnum.QUERY_USERS_ROLES_PERMISSIONS;
+
+		queryUsersRolesPermission.description =
+			"Allows to query users, roles and permissions";
+
+		const editUsersRolesPermission = new Permission();
+		editUsersRolesPermission.name = PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS;
+
+		editUsersRolesPermission.description =
+			"Allows to edit users, roles and permissions";
 
 		const permissions = [queryUsersRolesPermission, editUsersRolesPermission];
 

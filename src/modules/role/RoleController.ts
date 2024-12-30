@@ -70,7 +70,7 @@ export class RoleController {
 		// return plainToInstance(GetRoleByIdResponseDto, role, {
 		// 	excludeExtraneousValues: true
 		// });
-		return role;
+		return role as any;
 	}
 
 	@Post()
@@ -82,12 +82,14 @@ export class RoleController {
 	async create(
 		@Body() body: CreateRoleBodyDto
 	): Promise<CreateRoleResponseDto> {
-		let role = new Role(body.name, body.description);
+		let role = new Role();
+		role.name = body.name;
+		role.description = body.description;
 		role = await this.roleService.save(role);
 		// return plainToInstance(CreateRoleResponseDto, role, {
 		// 	excludeExtraneousValues: true
 		// });
-		return role;
+		return role as any;
 	}
 
 	@Put(":roleId")
@@ -108,7 +110,7 @@ export class RoleController {
 		// return plainToInstance(UpdateRoleResponseDto, role, {
 		// 	excludeExtraneousValues: true
 		// });
-		return role;
+		return role as any;
 	}
 
 	@Delete(":roleId")

@@ -25,12 +25,15 @@ export default class RoleSeeder implements Seeder {
 			}
 		);
 
-		const adminRole = new Role(RoleEnum.ADMIN, "Administrator");
+		const adminRole = new Role();
+		adminRole.name = RoleEnum.ADMIN;
+		adminRole.description = "Administrator role";
 		await adminRole.addPermission(queryUsersRolesPermission);
 		await adminRole.addPermission(editUsersRolesPermission);
 
-		const userRole = new Role(RoleEnum.USER, "Regular user");
-
+		const userRole = new Role();
+		userRole.name = RoleEnum.USER;
+		userRole.description = "Regular user role";
 		const roles = [adminRole, userRole];
 
 		for (const role of roles) {

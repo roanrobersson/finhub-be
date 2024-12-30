@@ -1,9 +1,7 @@
-import { Type } from "class-transformer";
-import { IsPositive } from "class-validator";
+import { IsNumberString } from "class-validator";
 
 export const IsId = () => {
 	return function (target: any, propertyKey: string) {
-		Type(() => Number)(target, propertyKey);
-		IsPositive()(target, propertyKey);
+		IsNumberString()(target, propertyKey);
 	};
 };

@@ -5,6 +5,8 @@ import { isPasswordValid } from "src/core/utils/passwordUtils";
 
 import { User } from "../user/UserEntity";
 import { UserService } from "../user/UserService";
+import { RefreshTokenResponseDto } from "./dtos/refreshTokenDtos";
+import { SignInResponseDto } from "./dtos/signInDtos";
 
 @Injectable()
 export class AuthService {
@@ -18,10 +20,7 @@ export class AuthService {
 	private readonly jwtRefreshTokenExpirationTime =
 		process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || "7d";
 
-	async signIn(
-		username: string,
-		password: string
-	): Promise<{ access_token: string; refresh_token: string }> {
+	async signIn(username: string, password: string): Promise<SignInResponseDto> {
 		try {
 			const user = await this.userService.findOneByUsername(username);
 			const isValidPassword = await isPasswordValid(password, user.password);
@@ -54,7 +53,7 @@ export class AuthService {
 
 	async refreshAccessToken(
 		refreshToken: string
-	): Promise<{ access_token: string }> {
+	): Promise<RefreshTokenResponseDto> {
 		try {
 			const payload = await this.jwtService.verifyAsync(refreshToken);
 

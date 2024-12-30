@@ -21,25 +21,22 @@ export default class UserSeeder implements Seeder {
 			name: RoleEnum.USER
 		});
 
-		const adminUser = new User(
-			"Admin",
-			"admin@gmail.com",
-			await hashPassword("admin")
-		);
+		const adminUser = new User();
+		adminUser.name = "Admin";
+		adminUser.email = "admin@gmail.com";
+		adminUser.password = await hashPassword("admin");
 		adminUser.addRole(adminRole);
 
-		const felipeUser = new User(
-			"Marcos",
-			"marcos@gmail.com",
-			await hashPassword("marcos")
-		);
+		const felipeUser = new User();
+		felipeUser.name = "Marcos";
+		felipeUser.email = "marcos@gmail.com";
+		felipeUser.password = await hashPassword("marcos");
 		felipeUser.addRole(userRole);
 
-		const mariaUser = new User(
-			"Maria",
-			"maria@gmail.com",
-			await hashPassword("maria")
-		);
+		const mariaUser = new User();
+		mariaUser.name = "Maria";
+		mariaUser.email = "maria@gmail.com";
+		mariaUser.password = await hashPassword("maria");
 		mariaUser.addRole(userRole);
 
 		const users = [adminUser, felipeUser, mariaUser];

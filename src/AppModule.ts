@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { databaseConfig } from "../database/config";
+import { AppController } from "./AppController";
 import { AuthModule } from "./modules/auth/AuthModule";
 import { PermissionModule } from "./modules/permission/PermissionModule";
 import { RoleModule } from "./modules/role/RoleModule";
@@ -27,7 +28,7 @@ import { UserModule } from "./modules/user/UserModule";
 		RoleModule,
 		PermissionModule
 	],
-	controllers: [],
+	controllers: [AppController],
 	providers: [
 		{
 			provide: APP_GUARD,

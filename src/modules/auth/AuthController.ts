@@ -37,14 +37,10 @@ export class AuthController {
 		type: SignInResponseDto
 	})
 	async signIn(@Body() signInDto: SignInBodyDto): Promise<SignInResponseDto> {
-		const response = await this.authService.signIn(
+		return await this.authService.signIn(
 			signInDto.username,
 			signInDto.password
 		);
-		// return plainToInstance(SignInResponseDto, response, {
-		// 	excludeExtraneousValues: true
-		// });
-		return response;
 	}
 
 	@Public()
@@ -59,11 +55,7 @@ export class AuthController {
 	async refreshToken(
 		@Body() body: RefreshTokenBodyDto
 	): Promise<RefreshTokenResponseDto> {
-		const response = this.authService.refreshAccessToken(body.refresh_token);
-		// return plainToInstance(RefreshTokenResponseDto, response, {
-		// 	excludeExtraneousValues: true
-		// });
-		return response;
+		return this.authService.refreshAccessToken(body.refresh_token);
 	}
 
 	@Get("profile")
@@ -73,9 +65,6 @@ export class AuthController {
 		type: GetProfileResponseDto
 	})
 	async getProfile(@Request() req): Promise<GetProfileResponseDto> {
-		// return plainToInstance(GetProfileResponseDto, req.user, {
-		// 	excludeExtraneousValues: true
-		// });
 		return req.user;
 	}
 }

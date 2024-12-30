@@ -29,7 +29,7 @@ import { Roles } from "src/modules/auth/RolesDecorator";
 import {
 	ChangeUserPasswordBodyDto,
 	ChangeUserPasswordParamsDto
-} from "./dtos/changeUserPassword";
+} from "./dtos/changeUserPasswordDtos";
 import {
 	CreateUserBodyDto,
 	CreateUserResponseDto
@@ -45,7 +45,10 @@ import {
 	UpdateUserParamsDto,
 	UpdateUserResponseDto
 } from "./dtos/updateUserDtos";
-import { User } from "./UserEntity";
+import { CreateUserMapper } from "./mappers/CreateUserMapper";
+import { GetAllUsersMapper } from "./mappers/GetAllUsersMapper";
+import { GetUserByIdMapper } from "./mappers/GetUserByIdMapper";
+import { UpdateUserMapper } from "./mappers/UpdateUserMapper";
 import { UserService } from "./UserService";
 
 @ApiBearerAuth()
@@ -53,6 +56,18 @@ import { UserService } from "./UserService";
 export class UserController {
 	@Inject(UserService)
 	private userService: UserService;
+
+	@Inject(GetAllUsersMapper)
+	private getAllUsersMapper: GetAllUsersMapper;
+
+	@Inject(GetUserByIdMapper)
+	private getUserByIdMapper: GetUserByIdMapper;
+
+	@Inject(CreateUserMapper)
+	private createUserMapper: CreateUserMapper;
+
+	@Inject(UpdateUserMapper)
+	private udateUserMapper: UpdateUserMapper;
 
 	@Get()
 	@Roles(RoleEnum.ADMIN)
@@ -62,7 +77,8 @@ export class UserController {
 		isArray: true
 	})
 	async getAll(): Promise<GetAllUsersResponseDto[]> {
-		return this.userService.getAll();
+		const users = await this.userService.getAll();
+		return this.getAllUsersMapper.toResponse(users);
 	}
 
 	@Get(":userId")
@@ -74,10 +90,7 @@ export class UserController {
 		@Param() params: GetUserByIdParams
 	): Promise<GetUserByIdResponseDto> {
 		const user = await this.userService.getById(params.userId);
-		// return plainToInstance(GetUserByIdResponseDto, user, {
-		// 	excludeExtraneousValues: true
-		// });
-		return user;
+		return this.getUserByIdMapper.toResponse(user);
 	}
 
 	@Public()
@@ -90,12 +103,9 @@ export class UserController {
 	async create(
 		@Body() body: CreateUserBodyDto
 	): Promise<CreateUserResponseDto> {
-		let user = new User(body.name, body.email, body.password);
+		let user = await this.createUserMapper.toEntity(body);
 		user = await this.userService.save(user);
-		// return plainToInstance(CreateUserResponseDto, user, {
-		// 	excludeExtraneousValues: true
-		// });
-		return user;
+		return this.createUserMapper.toResponse(user);
 	}
 
 	@Put(":userId")
@@ -109,12 +119,9 @@ export class UserController {
 		@Body() body: UpdateUserBodyDto
 	): Promise<UpdateUserResponseDto> {
 		let user = await this.userService.getById(params.userId);
-		user.name = body.name;
+		await this.udateUserMapper.copyToEntity(body, user);
 		user = await this.userService.save(user);
-		// return plainToInstance(UpdateUserResponseDto, user, {
-		// 	excludeExtraneousValues: true
-		// });
-		return user;
+		return this.udateUserMapper.toResponse(user);
 	}
 
 	@Put(":userId/change-password")

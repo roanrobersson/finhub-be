@@ -14,9 +14,7 @@ export class Permission extends BaseEntity {
 	@Column()
 	description: string;
 
-	constructor(name: string, description: string) {
-		super();
-		this.name = name;
-		this.description = description;
-	}
+	equals = (permission: Permission): boolean => {
+		return this.id === permission.id;
+	};
 }

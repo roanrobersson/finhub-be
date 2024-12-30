@@ -2,6 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 import { IsId } from "src/core/decorators/IsIdDecorator";
 
+import {
+	SimplifiedPermissionResponseDto,
+	SimplifiedRoleResponseDto
+} from "./commonDtos";
+
 export class UpdateUserParamsDto {
 	@IsId()
 	@ApiProperty({
@@ -39,9 +44,7 @@ export class UpdateUserResponseDto {
 	})
 	email: string;
 
-	@ApiProperty({
-		description: "The status of the user",
-		example: true
-	})
-	isActive: boolean;
+	roles: SimplifiedRoleResponseDto[];
+
+	permissions: SimplifiedPermissionResponseDto[];
 }

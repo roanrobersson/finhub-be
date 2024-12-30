@@ -12,10 +12,4 @@ export class GetAllRolesResponseDto {
 		example: "admin"
 	})
 	name: string;
-
-	@ApiProperty({
-		description: "The description of the role",
-		example: "Administrator"
-	})
-	description: string;
 }

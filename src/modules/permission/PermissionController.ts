@@ -5,11 +5,13 @@ import {
 	ApiDefaultGetByIdResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
 
-import { GetAllPermissionResponseDto } from "./dtos/getAllPermissionsDtos";
+import { GetAllPermissionsResponseDto } from "./dtos/getAllPermissionsDtos";
 import {
 	GetPermissionByIdParams,
 	GetPermisssionByIdResponse
 } from "./dtos/getPermissionByIdDtos";
+import { GetAllPermissionsMapper } from "./mappers/GetAllPermissionMapper";
+import { GetPermissionByIdMapper } from "./mappers/GetPermissionByIdMapper";
 import { PermissionService } from "./PermissionService";
 
 @Controller("permissions")
@@ -17,18 +19,21 @@ export class PermissionController {
 	@Inject()
 	private permissionService: PermissionService;
 
+	@Inject()
+	private getAllPermissionsMapper: GetAllPermissionsMapper;
+
+	@Inject()
+	private getPermissionByIdMapper: GetPermissionByIdMapper;
+
 	@Get()
 	@ApiOperation({ summary: "List all permissions" })
 	@ApiDefaultGetAllResponse({
-		type: GetAllPermissionResponseDto,
+		type: GetAllPermissionsResponseDto,
 		isArray: true
 	})
-	async getAll(): Promise<GetAllPermissionResponseDto[]> {
+	async getAll(): Promise<GetAllPermissionsResponseDto[]> {
 		const permissions = await this.permissionService.getAll();
-		// return plainToInstance(GetAllPermissionResponseDto, permissions, {
-		// 	excludeExtraneousValues: true
-		// });
-		return permissions;
+		return await this.getAllPermissionsMapper.toResponse(permissions);
 	}
 
 	@Get(":permissionId")
@@ -43,9 +48,6 @@ export class PermissionController {
 		const permission = await this.permissionService.getById(
 			params.permissionId
 		);
-		// return plainToInstance(GetPermisssionByIdResponse, permission, {
-		// 	excludeExtraneousValues: true
-		// });
-		return permission;
+		return await this.getPermissionByIdMapper.toResponse(permission);
 	}
 }

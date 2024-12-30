@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class GetAllPermissionsResponseDto {
+export class SimplifiedPermissionResponseDto {
 	@ApiProperty({
 		description: "The id of the permission",
 		example: 1
