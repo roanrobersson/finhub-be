@@ -1,3 +1,4 @@
+import { PermissionEnum } from "src/core/enums/PermissionEnum";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
@@ -11,11 +12,11 @@ export default class PermissionSeeder implements Seeder {
 		const repository = dataSource.getRepository(Permission);
 
 		const queryUsersRolesPermission = new Permission(
-			DefaultPermissionName.QUERY_USERS_ROLES_PERMISSIONS,
+			PermissionEnum.QUERY_USERS_ROLES_PERMISSIONS,
 			"Allows to query users, roles and permissions"
 		);
 		const editUsersRolesPermission = new Permission(
-			DefaultPermissionName.EDIT_USERS_ROLES_PERMISSIONS,
+			PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS,
 			"Allows to edit users, roles and permissions"
 		);
 
@@ -30,9 +31,4 @@ export default class PermissionSeeder implements Seeder {
 			}
 		}
 	}
-}
-
-export enum DefaultPermissionName {
-	QUERY_USERS_ROLES_PERMISSIONS = "QUERY_USERS_ROLES_PERMISSIONS",
-	EDIT_USERS_ROLES_PERMISSIONS = "EDIT_USERS_ROLES_PERMISSIONS"
 }

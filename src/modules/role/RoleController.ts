@@ -18,7 +18,9 @@ import {
 	ApiDefaultGetByIdResponse,
 	ApiDefaultUpdateResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
+import { RoleEnum } from "src/core/enums/RoleEnum";
 
+import { Roles } from "../auth/RolesDecorator";
 import {
 	CreateRoleBodyDto,
 	CreateRoleResponseDto
@@ -72,6 +74,7 @@ export class RoleController {
 	}
 
 	@Post()
+	@Roles(RoleEnum.ADMIN)
 	@ApiOperation({ summary: "Create a new role" })
 	@ApiDefaultCreateResponse({
 		type: CreateRoleResponseDto
@@ -88,6 +91,7 @@ export class RoleController {
 	}
 
 	@Put(":roleId")
+	@Roles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a role by id" })
 	@ApiDefaultUpdateResponse({
@@ -108,6 +112,7 @@ export class RoleController {
 	}
 
 	@Delete(":roleId")
+	@Roles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a role by id" })
 	@ApiDefaultDeleteResponse()

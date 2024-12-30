@@ -1,4 +1,4 @@
-export enum ProblemType {
+export enum ProblemTypeEnum {
 	UNIQUE_CONSTRAINT = "UNIQUE_CONSTRAINT",
 	ENTITY_NOT_FOUND = "ENTITY_NOT_FOUND",
 	ENTITY_IN_USE = "ENTITY_IN_USE",

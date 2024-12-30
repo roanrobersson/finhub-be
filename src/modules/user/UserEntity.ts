@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 
 import { BaseEntity } from "../../core/BaseEntity";
+import { Permission } from "../permission/PermissionEntity";
 import { Role } from "../role/RoleEntity";
 
 @Entity()
@@ -45,6 +46,15 @@ export class User extends BaseEntity {
 
 	async getRoles(): Promise<Role[]> {
 		return this.roles;
+	}
+
+	async getPermissions(): Promise<Permission[]> {
+		const roles = await this.getRoles();
+		const permissionsArrays = await Promise.all(
+			roles.map((role) => role.getPermissions())
+		);
+		const permissions = permissionsArrays.flat();
+		return [...new Set(permissions)];
 	}
 
 	async addRole(role: Role) {

@@ -1,10 +1,10 @@
+import { RoleEnum } from "src/core/enums/RoleEnum";
 import { hashPassword } from "src/core/utils/passwordUtils";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
 import { Role } from "../../src/modules/role/RoleEntity";
 import { User } from "../../src/modules/user/UserEntity";
-import { DefaultRoleName } from "./RoleSeeder";
 
 export default class UserSeeder implements Seeder {
 	public async run(
@@ -15,10 +15,10 @@ export default class UserSeeder implements Seeder {
 		const roleRepository = dataSource.getRepository(Role);
 
 		const adminRole = await roleRepository.findOneByOrFail({
-			name: DefaultRoleName.ADMIN
+			name: RoleEnum.ADMIN
 		});
 		const userRole = await roleRepository.findOneByOrFail({
-			name: DefaultRoleName.USER
+			name: RoleEnum.USER
 		});
 
 		const adminUser = new User(

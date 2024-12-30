@@ -1,9 +1,10 @@
+import { PermissionEnum } from "src/core/enums/PermissionEnum";
+import { RoleEnum } from "src/core/enums/RoleEnum";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 
 import { Permission } from "../../src/modules/permission/PermissionEntity";
 import { Role } from "../../src/modules/role/RoleEntity";
-import { DefaultPermissionName } from "./PermissionSeeder";
 
 export default class RoleSeeder implements Seeder {
 	public async run(
@@ -15,20 +16,20 @@ export default class RoleSeeder implements Seeder {
 
 		const queryUsersRolesPermission =
 			await permissionRepository.findOneByOrFail({
-				name: DefaultPermissionName.QUERY_USERS_ROLES_PERMISSIONS
+				name: PermissionEnum.QUERY_USERS_ROLES_PERMISSIONS
 			});
 
 		const editUsersRolesPermission = await permissionRepository.findOneByOrFail(
 			{
-				name: DefaultPermissionName.EDIT_USERS_ROLES_PERMISSIONS
+				name: PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS
 			}
 		);
 
-		const adminRole = new Role(DefaultRoleName.ADMIN, "Administrator");
+		const adminRole = new Role(RoleEnum.ADMIN, "Administrator");
 		await adminRole.addPermission(queryUsersRolesPermission);
 		await adminRole.addPermission(editUsersRolesPermission);
 
-		const userRole = new Role(DefaultRoleName.USER, "Regular user");
+		const userRole = new Role(RoleEnum.USER, "Regular user");
 
 		const roles = [adminRole, userRole];
 
@@ -39,10 +40,4 @@ export default class RoleSeeder implements Seeder {
 			}
 		}
 	}
-}
-
-export enum DefaultRoleName {
-	ADMIN = "admin",
-	USER = "user",
-	TEST = "test"
 }

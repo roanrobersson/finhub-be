@@ -7,6 +7,7 @@ import { UserModule } from "src/modules/user/UserModule";
 import { AuthController } from "./AuthController";
 import { AuthGuard } from "./AuthGuard";
 import { AuthService } from "./AuthService";
+import { RolesGuard } from "./RolesGuard";
 
 @Module({
 	imports: [
@@ -29,6 +30,10 @@ import { AuthService } from "./AuthService";
 		{
 			provide: APP_GUARD,
 			useClass: AuthGuard
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard
 		}
 	],
 	exports: [AuthService]

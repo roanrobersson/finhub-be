@@ -22,8 +22,9 @@ import {
 	ApiDefaultGetByIdResponse,
 	ApiDefaultUpdateResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
-import { Role, Roles } from "src/core/decorators/RolesDecorator";
+import { RoleEnum } from "src/core/enums/RoleEnum";
 import { Public } from "src/modules/auth/AuthGuard";
+import { Roles } from "src/modules/auth/RolesDecorator";
 
 import {
 	ChangeUserPasswordBodyDto,
@@ -54,7 +55,7 @@ export class UserController {
 	private userService: UserService;
 
 	@Get()
-	@Roles(Role.Admin)
+	@Roles(RoleEnum.ADMIN)
 	@ApiOperation({ summary: "List all users" })
 	@ApiDefaultGetAllResponse({
 		type: GetAllUsersResponseDto,
@@ -134,6 +135,7 @@ export class UserController {
 	}
 
 	@Delete(":userId")
+	@Roles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a user by id" })
 	@ApiDefaultDeleteResponse()
