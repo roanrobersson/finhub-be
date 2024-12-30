@@ -1,15 +1,15 @@
-import { Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetProfileResponseDto {
-	@Expose()
 	sub: number;
 
-	@Expose()
+	@ApiProperty({
+		description: "The username of the user",
+		example: "admin"
+	})
 	username: string;
 
-	@Expose()
 	iat: number;
 
-	@Expose()
 	exp: number;
 }

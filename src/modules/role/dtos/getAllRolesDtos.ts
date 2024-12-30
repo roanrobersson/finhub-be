@@ -1,12 +1,21 @@
-import { Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetAllRolesResponseDto {
-	@Expose()
+	@ApiProperty({
+		description: "The id of the role",
+		example: 1
+	})
 	id: number;
 
-	@Expose()
+	@ApiProperty({
+		description: "The name of the role",
+		example: "admin"
+	})
 	name: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The description of the role",
+		example: "Administrator"
+	})
 	description: string;
 }

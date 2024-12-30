@@ -1,5 +1,9 @@
 import { Controller, Get, Inject, Param } from "@nestjs/common";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import {
+	ApiDefaultGetAllResponse,
+	ApiDefaultGetByIdResponse
+} from "src/core/decorators/ApiDefaultResponseDecorator";
 
 import { GetAllPermissionResponseDto } from "./dtos/getAllPermissionsDtos";
 import {
@@ -15,6 +19,10 @@ export class PermissionController {
 
 	@Get()
 	@ApiOperation({ summary: "List all permissions" })
+	@ApiDefaultGetAllResponse({
+		type: GetAllPermissionResponseDto,
+		isArray: true
+	})
 	async getAll(): Promise<GetAllPermissionResponseDto[]> {
 		const permissions = await this.permissionService.getAll();
 		// return plainToInstance(GetAllPermissionResponseDto, permissions, {
@@ -26,6 +34,9 @@ export class PermissionController {
 	@Get(":permissionId")
 	@ApiOperation({ summary: "Find a permission by id" })
 	@ApiResponse({ type: GetPermisssionByIdResponse })
+	@ApiDefaultGetByIdResponse({
+		type: GetPermisssionByIdResponse
+	})
 	async getById(
 		@Param() params: GetPermissionByIdParams
 	): Promise<GetPermisssionByIdResponse> {

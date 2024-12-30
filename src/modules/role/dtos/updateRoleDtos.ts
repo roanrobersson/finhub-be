@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
 import { IsId } from "src/core/decorators/IsIdDecorator";
 
@@ -29,12 +28,21 @@ export class UpdateRoleBodyDto {
 }
 
 export class UpdateRoleResponseDto {
-	@Expose()
+	@ApiProperty({
+		description: "The id of the role",
+		example: 1
+	})
 	id: number;
 
-	@Expose()
+	@ApiProperty({
+		description: "The name of the role",
+		example: "admin"
+	})
 	name: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The description of the role",
+		example: "Administrator"
+	})
 	description: string;
 }

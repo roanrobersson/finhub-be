@@ -11,6 +11,13 @@ import {
 	Put
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
+import {
+	ApiDefaultCreateResponse,
+	ApiDefaultDeleteResponse,
+	ApiDefaultGetAllResponse,
+	ApiDefaultGetByIdResponse,
+	ApiDefaultUpdateResponse
+} from "src/core/decorators/ApiDefaultResponseDecorator";
 
 import {
 	CreateRoleBodyDto,
@@ -37,6 +44,10 @@ export class RoleController {
 
 	@Get()
 	@ApiOperation({ summary: "List all roles" })
+	@ApiDefaultGetAllResponse({
+		type: GetAllRolesResponseDto,
+		isArray: true
+	})
 	async getAll(): Promise<GetAllRolesResponseDto[]> {
 		const roles = await this.roleService.getAll();
 		// return plainToInstance(GetAllRolesResponseDto, roles, {
@@ -47,6 +58,9 @@ export class RoleController {
 
 	@Get(":roleId")
 	@ApiOperation({ summary: "Find a role by id" })
+	@ApiDefaultGetByIdResponse({
+		type: GetRoleByIdResponseDto
+	})
 	async getById(
 		@Param() params: GetRoleByIdParamsDto
 	): Promise<GetRoleByIdResponseDto> {
@@ -59,6 +73,9 @@ export class RoleController {
 
 	@Post()
 	@ApiOperation({ summary: "Create a new role" })
+	@ApiDefaultCreateResponse({
+		type: CreateRoleResponseDto
+	})
 	async create(
 		@Body() body: CreateRoleBodyDto
 	): Promise<CreateRoleResponseDto> {
@@ -71,8 +88,11 @@ export class RoleController {
 	}
 
 	@Put(":roleId")
-	@HttpCode(HttpStatus.NO_CONTENT)
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a role by id" })
+	@ApiDefaultUpdateResponse({
+		type: UpdateRoleResponseDto
+	})
 	async update(
 		@Param() params: UpdateRoleParamsDto,
 		@Body() body: UpdateRoleBodyDto
@@ -90,6 +110,7 @@ export class RoleController {
 	@Delete(":roleId")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a role by id" })
+	@ApiDefaultDeleteResponse()
 	async remove(
 		@Param()
 		params: DeleteRoleParams

@@ -8,6 +8,7 @@ import {
 	Put
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
+import { ApiDefaultActionResponse } from "src/core/decorators/ApiDefaultResponseDecorator";
 
 import { AssociateRolePermissionParams } from "./dtos/associateDtos";
 import { DesassociateRolePermissionParams } from "./dtos/disassociateDtos";
@@ -21,6 +22,9 @@ export class RolePermissionController {
 	@Put(":permissionId")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Associate a permission to a role" })
+	@ApiDefaultActionResponse({
+		description: "The permission has been successfully associated."
+	})
 	async associate(
 		@Param() params: AssociateRolePermissionParams
 	): Promise<void> {
@@ -33,6 +37,9 @@ export class RolePermissionController {
 	@Delete(":permissionId")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Disassociate a permission from a role" })
+	@ApiDefaultActionResponse({
+		description: "The permission has been successfully disassociated."
+	})
 	async disassociate(
 		@Param() params: DesassociateRolePermissionParams
 	): Promise<void> {

@@ -10,7 +10,19 @@ import {
 	Post,
 	Put
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
+import {
+	ApiBearerAuth,
+	ApiNoContentResponse,
+	ApiOperation
+} from "@nestjs/swagger";
+import {
+	ApiDefaultCreateResponse,
+	ApiDefaultDeleteResponse,
+	ApiDefaultGetAllResponse,
+	ApiDefaultGetByIdResponse,
+	ApiDefaultUpdateResponse
+} from "src/core/decorators/ApiDefaultResponseDecorator";
+import { Role, Roles } from "src/core/decorators/RolesDecorator";
 import { Public } from "src/modules/auth/AuthGuard";
 
 import {
@@ -42,13 +54,21 @@ export class UserController {
 	private userService: UserService;
 
 	@Get()
+	@Roles(Role.Admin)
 	@ApiOperation({ summary: "List all users" })
+	@ApiDefaultGetAllResponse({
+		type: GetAllUsersResponseDto,
+		isArray: true
+	})
 	async getAll(): Promise<GetAllUsersResponseDto[]> {
 		return this.userService.getAll();
 	}
 
 	@Get(":userId")
 	@ApiOperation({ summary: "Find a user by id" })
+	@ApiDefaultGetByIdResponse({
+		type: GetUserByIdResponseDto
+	})
 	async getById(
 		@Param() params: GetUserByIdParams
 	): Promise<GetUserByIdResponseDto> {
@@ -62,6 +82,10 @@ export class UserController {
 	@Public()
 	@Post()
 	@ApiOperation({ summary: "Create a new user" })
+	@ApiDefaultCreateResponse({
+		type: CreateUserBodyDto,
+		public: true
+	})
 	async create(
 		@Body() body: CreateUserBodyDto
 	): Promise<CreateUserResponseDto> {
@@ -74,8 +98,11 @@ export class UserController {
 	}
 
 	@Put(":userId")
-	@HttpCode(HttpStatus.NO_CONTENT)
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a user by id" })
+	@ApiDefaultUpdateResponse({
+		type: CreateUserBodyDto
+	})
 	async update(
 		@Param() params: UpdateUserParamsDto,
 		@Body() body: UpdateUserBodyDto
@@ -91,7 +118,10 @@ export class UserController {
 
 	@Put(":userId/change-password")
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@ApiOperation({ summary: "Update a user by id" })
+	@ApiOperation({ summary: "Upddate a user password by id" })
+	@ApiNoContentResponse({
+		description: "The password has been successfully updated."
+	})
 	async changePassword(
 		@Param() params: ChangeUserPasswordParamsDto,
 		@Body() body: ChangeUserPasswordBodyDto
@@ -106,6 +136,7 @@ export class UserController {
 	@Delete(":userId")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a user by id" })
+	@ApiDefaultDeleteResponse()
 	async remove(@Param() params: DeleteUserParams): Promise<void> {
 		await this.userService.remove(params.userId);
 	}

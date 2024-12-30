@@ -1,12 +1,21 @@
-import { Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetAllUsersResponseDto {
-	@Expose()
+	@ApiProperty({
+		description: "The id of the user",
+		example: "1"
+	})
 	id: number;
 
-	@Expose()
+	@ApiProperty({
+		description: "The name of the user",
+		example: "Pedro"
+	})
 	name: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The email of the user",
+		example: "pedro@gmail.com"
+	})
 	email: string;
 }

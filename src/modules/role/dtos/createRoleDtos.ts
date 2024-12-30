@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
 
 export class CreateRoleBodyDto {
@@ -19,9 +18,15 @@ export class CreateRoleBodyDto {
 }
 
 export class CreateRoleResponseDto {
-	@Expose()
+	@ApiProperty({
+		description: "The name of the role",
+		example: "admin"
+	})
 	name: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The description of the role",
+		example: "Administrator"
+	})
 	description: string;
 }

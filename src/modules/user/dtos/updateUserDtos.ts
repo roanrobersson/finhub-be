@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
 import { IsId } from "src/core/decorators/IsIdDecorator";
 
@@ -22,15 +21,27 @@ export class UpdateUserBodyDto {
 }
 
 export class UpdateUserResponseDto {
-	@Expose()
+	@ApiProperty({
+		description: "The id of the user",
+		example: "1"
+	})
 	id: number;
 
-	@Expose()
+	@ApiProperty({
+		description: "The name of the user",
+		example: "Pedro"
+	})
 	name: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The email of the user",
+		example: "pedro@gmail.com"
+	})
 	email: string;
 
-	@Expose()
+	@ApiProperty({
+		description: "The status of the user",
+		example: true
+	})
 	isActive: boolean;
 }
