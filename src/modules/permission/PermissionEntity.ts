@@ -1,6 +1,5 @@
+import { BaseEntity } from "src/core/BaseEntity";
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
-
-import { BaseEntity } from "../../core/BaseEntity";
 
 @Entity()
 export class Permission extends BaseEntity {

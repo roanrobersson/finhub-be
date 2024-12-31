@@ -1,8 +1,7 @@
 import { PermissionEnum } from "src/core/enums/PermissionEnum";
+import { Permission } from "src/modules/permission/PermissionEntity";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-
-import { Permission } from "../../src/modules/permission/PermissionEntity";
 
 export default class PermissionSeeder implements Seeder {
 	public async run(

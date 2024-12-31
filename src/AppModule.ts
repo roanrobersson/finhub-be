@@ -1,10 +1,14 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
+import { addTransactionalDataSource } from "typeorm-transactional";
 
-import { databaseConfig } from "../database/config";
+import { Permission } from "../src/modules/permission/PermissionEntity";
+import { Role } from "../src/modules/role/RoleEntity";
+import { User } from "../src/modules/user/UserEntity";
 import { AppController } from "./AppController";
 import { AuthModule } from "./modules/auth/AuthModule";
 import { PermissionModule } from "./modules/permission/PermissionModule";
@@ -22,7 +26,22 @@ import { UserModule } from "./modules/user/UserModule";
 				limit: 100
 			}
 		]),
-		TypeOrmModule.forRootAsync(databaseConfig),
+		TypeOrmModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				type: "postgres",
+				url: configService.get<string>("DB_URL"),
+				logging: Boolean(configService.get<boolean>("DB_LOGGING", false)),
+				entities: [User, Permission, Role]
+			}),
+			async dataSourceFactory(options) {
+				if (!options) {
+					throw new Error("Invalid options passed");
+				}
+				return addTransactionalDataSource(new DataSource(options));
+			}
+		}),
 		AuthModule,
 		UserModule,
 		RoleModule,

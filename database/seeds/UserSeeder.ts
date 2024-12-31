@@ -1,10 +1,9 @@
 import { RoleEnum } from "src/core/enums/RoleEnum";
 import { hashPassword } from "src/core/utils/passwordUtils";
+import { Role } from "src/modules/role/RoleEntity";
+import { User } from "src/modules/user/UserEntity";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-
-import { Role } from "../../src/modules/role/RoleEntity";
-import { User } from "../../src/modules/user/UserEntity";
 
 export default class UserSeeder implements Seeder {
 	public async run(
@@ -24,19 +23,19 @@ export default class UserSeeder implements Seeder {
 		const adminUser = new User();
 		adminUser.name = "Admin";
 		adminUser.email = "admin@gmail.com";
-		adminUser.password = await hashPassword("admin");
+		adminUser.password = await hashPassword("admin123");
 		adminUser.addRole(adminRole);
 
 		const felipeUser = new User();
 		felipeUser.name = "Marcos";
 		felipeUser.email = "marcos@gmail.com";
-		felipeUser.password = await hashPassword("marcos");
+		felipeUser.password = await hashPassword("marcos123");
 		felipeUser.addRole(userRole);
 
 		const mariaUser = new User();
 		mariaUser.name = "Maria";
 		mariaUser.email = "maria@gmail.com";
-		mariaUser.password = await hashPassword("maria");
+		mariaUser.password = await hashPassword("maria123");
 		mariaUser.addRole(userRole);
 
 		const users = [adminUser, felipeUser, mariaUser];
