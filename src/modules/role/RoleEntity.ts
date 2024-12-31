@@ -1,3 +1,5 @@
+import { BaseEntity } from "src/core/BaseEntity";
+import { Permission } from "src/modules/permission/PermissionEntity";
 import {
 	Column,
 	Entity,
@@ -6,9 +8,6 @@ import {
 	PrimaryGeneratedColumn,
 	Unique
 } from "typeorm";
-
-import { BaseEntity } from "../../core/BaseEntity";
-import { Permission } from "../permission/PermissionEntity";
 
 @Entity()
 export class Role extends BaseEntity {

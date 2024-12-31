@@ -1,10 +1,9 @@
 import { PermissionEnum } from "src/core/enums/PermissionEnum";
 import { RoleEnum } from "src/core/enums/RoleEnum";
+import { Permission } from "src/modules/permission/PermissionEntity";
+import { Role } from "src/modules/role/RoleEntity";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-
-import { Permission } from "../../src/modules/permission/PermissionEntity";
-import { Role } from "../../src/modules/role/RoleEntity";
 
 export default class RoleSeeder implements Seeder {
 	public async run(

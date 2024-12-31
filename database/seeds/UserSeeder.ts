@@ -1,10 +1,9 @@
 import { RoleEnum } from "src/core/enums/RoleEnum";
 import { hashPassword } from "src/core/utils/passwordUtils";
+import { Role } from "src/modules/role/RoleEntity";
+import { User } from "src/modules/user/UserEntity";
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-
-import { Role } from "../../src/modules/role/RoleEntity";
-import { User } from "../../src/modules/user/UserEntity";
 
 export default class UserSeeder implements Seeder {
 	public async run(
