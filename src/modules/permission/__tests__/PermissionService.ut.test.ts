@@ -13,7 +13,6 @@ const mockPermissionRepository = () => ({
 describe("PermissionService UT", () => {
 	let service: PermissionService;
 	let repository: PermissionRepository;
-	// let mapper: GetAllPermissionsMapper;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
