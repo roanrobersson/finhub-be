@@ -79,6 +79,7 @@ export class AuthService {
 		const permissions = await user.getPermissions();
 		return {
 			sub: user.id,
+			name: user.name,
 			username: user.email,
 			roles: roles.map((role) => role.name),
 			permissions: permissions.map((permission) => permission.name)
