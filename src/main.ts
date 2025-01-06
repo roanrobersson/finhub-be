@@ -19,6 +19,11 @@ async function bootstrap() {
 
 	app.use(helmet());
 
+	app.enableCors({
+		origin: true,
+		credentials: true
+	});
+
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
 	app.useGlobalFilters(
