@@ -8,6 +8,12 @@ export class GetProfileResponseDto {
 	sub: number;
 
 	@ApiProperty({
+		description: "The name of the user",
+		example: "Admin"
+	})
+	name: string;
+
+	@ApiProperty({
 		description: "The username of the user",
 		example: "admin"
 	})
