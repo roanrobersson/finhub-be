@@ -1,61 +1,52 @@
 import {
-	Body,
 	Controller,
 	Get,
 	HttpCode,
 	HttpStatus,
 	Inject,
 	Post,
-	Request
+	Request,
+	UseGuards
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import {
 	ApiDefaultActionResponse,
 	ApiDefaultGetResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
+import { Public } from "src/core/decorators/PublicDecorator";
 
-import { Public } from "./AuthGuard";
+import { User } from "../user/UserEntity";
 import { AuthService } from "./AuthService";
 import { GetProfileResponseDto } from "./dtos/getProfileDtos";
-import {
-	RefreshTokenBodyDto,
-	RefreshTokenResponseDto
-} from "./dtos/refreshTokenDtos";
-import { SignInBodyDto, SignInResponseDto } from "./dtos/signInDtos";
+import { SignInResponseDto } from "./dtos/signInDtos";
+import { AuthUserData } from "./JwtStrategy";
+import { LocalAuthGuard } from "./LocalAuthGuard";
+
+interface LocalAuthenticatedRequest extends Request {
+	user: User;
+}
+interface JwtAuthenticatedRequest extends Request {
+	user: AuthUserData;
+}
 
 @Controller("auth")
 export class AuthController {
 	@Inject(AuthService)
 	private authService: AuthService;
 
-	@Public()
 	@Post("signin")
+	@Public()
+	@UseGuards(LocalAuthGuard)
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Sign in" })
 	@ApiDefaultActionResponse({
 		description: "The user has been successfully signed in.",
 		type: SignInResponseDto
 	})
-	async signIn(@Body() signInDto: SignInBodyDto): Promise<SignInResponseDto> {
-		return await this.authService.signIn(
-			signInDto.username,
-			signInDto.password
-		);
-	}
-
-	@Public()
-	@Post("refresh")
-	@HttpCode(HttpStatus.OK)
-	@ApiOperation({ summary: "Refresh the access token" })
-	@ApiDefaultActionResponse({
-		description: "The access token has been successfully refreshed.",
-		type: RefreshTokenResponseDto,
-		public: true
-	})
-	async refreshToken(
-		@Body() body: RefreshTokenBodyDto
-	): Promise<RefreshTokenResponseDto> {
-		return this.authService.refreshAccessToken(body.refresh_token);
+	async signIn(
+		@Request() req: LocalAuthenticatedRequest
+	): Promise<SignInResponseDto> {
+		return this.authService.signIn(req.user);
 	}
 
 	@Get("profile")
@@ -64,7 +55,9 @@ export class AuthController {
 		description: "The user profile has been successfully retrieved.",
 		type: GetProfileResponseDto
 	})
-	async getProfile(@Request() req): Promise<GetProfileResponseDto> {
+	async getProfile(
+		@Request() req: JwtAuthenticatedRequest
+	): Promise<GetProfileResponseDto> {
 		return req.user;
 	}
 }

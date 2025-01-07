@@ -66,7 +66,6 @@ describe("Auth E2E", () => {
 				.expect(HttpStatus.OK);
 
 			expect(response).toHaveProperty("body.access_token");
-			expect(response).toHaveProperty("body.refresh_token");
 			const { access_token } = response.body;
 			await jwtService.verifyAsync(access_token, {
 				secret: secret

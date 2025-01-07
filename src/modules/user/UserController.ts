@@ -22,8 +22,8 @@ import {
 	ApiDefaultGetByIdResponse,
 	ApiDefaultUpdateResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
+import { Public } from "src/core/decorators/PublicDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
-import { Public } from "src/modules/auth/AuthGuard";
 import { Roles } from "src/modules/auth/RolesDecorator";
 
 import {
@@ -93,8 +93,8 @@ export class UserController {
 		return this.getUserByIdMapper.toResponse(user);
 	}
 
-	@Public()
 	@Post()
+	@Public()
 	@ApiOperation({ summary: "Create a new user" })
 	@ApiDefaultCreateResponse({
 		type: CreateUserBodyDto,
