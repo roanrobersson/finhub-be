@@ -26,11 +26,9 @@ export class AuthService {
 		}
 	}
 
-	async signIn(user: User) {
+	async signIn(user: User): Promise<string> {
 		const payload = await this.buildPayload(user);
-		return {
-			access_token: this.jwtService.sign(payload)
-		};
+		return this.jwtService.sign(payload);
 	}
 
 	private async buildPayload(user: User) {

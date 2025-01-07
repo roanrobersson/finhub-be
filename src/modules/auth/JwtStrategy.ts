@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-
-import "dotenv/config";
-
+import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
+import { EnvVarEnum } from "src/core/enums/EnvVarEnum";
 
-const JWT_SECRET = process.env.JWT_SECRET;
+import { JWT_COOKIE_NAME } from "./constants";
 
 export type JwtData = {
 	sub: number;
@@ -27,11 +27,18 @@ export type AuthUserData = {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-	constructor() {
+	constructor(
+		@Inject()
+		protected configService: ConfigService
+	) {
 		super({
-			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			jwtFromRequest: ExtractJwt.fromExtractors([
+				(req: Request) => {
+					return req.cookies?.[JWT_COOKIE_NAME];
+				}
+			]),
 			ignoreExpiration: false,
-			secretOrKey: JWT_SECRET
+			secretOrKey: configService.get<string>(EnvVarEnum.JWT_SECRET)
 		});
 	}
 
