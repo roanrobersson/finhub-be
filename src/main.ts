@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as cookieParser from "cookie-parser";
 import helmet from "helmet";
 import {
 	initializeTransactionalContext,
@@ -23,6 +24,8 @@ async function bootstrap() {
 		origin: true,
 		credentials: true
 	});
+
+	app.use(cookieParser());
 
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
