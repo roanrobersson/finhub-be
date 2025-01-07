@@ -24,11 +24,4 @@ export class SignInResponseDto {
 			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzM1MDQ2ODg3LCJleHAiOjE3Mzc2Mzg4ODd9.7YI9UQ6vLBYaQEVQLAX_HDp6j9Mo4_bvIpY_3DFSkbQ"
 	})
 	access_token: string;
-
-	@ApiProperty({
-		description: "The refresh token",
-		example:
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzM1MDQ2ODg3LCJleHAiOjE3Mzc2Mzg4ODd9.7YI9UQ6vLBYaQEVQLAX_HDp6j9Mo4_bvIpY_3DFSkbQ"
-	})
-	refresh_token: string;
 }

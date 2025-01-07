@@ -5,7 +5,7 @@ export class GetProfileResponseDto {
 		description: "The id of the user",
 		example: "1"
 	})
-	sub: number;
+	id: number;
 
 	@ApiProperty({
 		description: "The name of the user",
@@ -14,20 +14,20 @@ export class GetProfileResponseDto {
 	name: string;
 
 	@ApiProperty({
-		description: "The username of the user",
+		description: "The email of the user",
 		example: "admin"
 	})
-	username: string;
+	email: string;
 
 	@ApiProperty({
-		description: "The time the token was issued",
-		example: "1735586517"
+		description: "The roles of the user",
+		example: ["admin"]
 	})
-	iat: number;
+	roles: string[];
 
 	@ApiProperty({
-		description: "The expiration time of the token",
-		example: "1736882517"
+		description: "The permissions of the user",
+		example: ["QUERY_USERS_ROLES_PERMISSIONS", "EDIT_USERS_ROLES_PERMISSIONS"]
 	})
-	exp: number;
+	permissions: string[];
 }

@@ -2,7 +2,7 @@ import { Controller, Get } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
 import { ApiDefaultGetResponse } from "./core/decorators/ApiDefaultResponseDecorator";
-import { Public } from "./modules/auth/AuthGuard";
+import { Public } from "./core/decorators/PublicDecorator";
 
 @Controller()
 export class AppController {

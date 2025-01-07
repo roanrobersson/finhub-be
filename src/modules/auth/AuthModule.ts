@@ -5,8 +5,10 @@ import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "src/modules/user/UserModule";
 
 import { AuthController } from "./AuthController";
-import { AuthGuard } from "./AuthGuard";
 import { AuthService } from "./AuthService";
+import { JwtAuthGuard } from "./JwtAuthGuard";
+import { JwtStrategy } from "./JwtStrategy";
+import { LocalStrategy } from "./LocalStrategy";
 import { RolesGuard } from "./RolesGuard";
 
 @Module({
@@ -20,7 +22,9 @@ import { RolesGuard } from "./RolesGuard";
 			inject: [ConfigService],
 			useFactory: (configService: ConfigService) => ({
 				secret: configService.get<string>("JWT_SECRET"),
-				signOptions: { expiresIn: "60s" }
+				signOptions: {
+					expiresIn: configService.get<string>("JWT_EXPIRATION_TIME")
+				}
 			})
 		})
 	],
@@ -29,12 +33,14 @@ import { RolesGuard } from "./RolesGuard";
 		AuthService,
 		{
 			provide: APP_GUARD,
-			useClass: AuthGuard
+			useClass: JwtAuthGuard
 		},
 		{
 			provide: APP_GUARD,
 			useClass: RolesGuard
-		}
+		},
+		LocalStrategy,
+		JwtStrategy
 	],
 	exports: [AuthService]
 })
