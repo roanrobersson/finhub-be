@@ -12,6 +12,7 @@ import { AppModule } from "./AppModule";
 import { BusinessExceptionFilter } from "./core/filters/BusinessExceptionFilter";
 import { HttpExceptionFilter } from "./core/filters/HttpExceptionFilter";
 import { UnhandledExceptionFilter } from "./core/filters/UnhandledExceptionFilter";
+import { ResponseDelayInterceptor } from "./core/interceptors/ResponseDelayInterceptor";
 
 async function bootstrap() {
 	initializeTransactionalContext({ storageDriver: StorageDriver.AUTO }); // Should be called before all
@@ -28,6 +29,8 @@ async function bootstrap() {
 	app.use(cookieParser());
 
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+	app.useGlobalInterceptors(new ResponseDelayInterceptor());
 
 	app.useGlobalFilters(
 		new UnhandledExceptionFilter(), // Should be the first one
