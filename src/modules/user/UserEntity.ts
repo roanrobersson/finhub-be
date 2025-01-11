@@ -22,8 +22,11 @@ export class User extends BaseEntity {
 	@Unique(["email"])
 	email: string;
 
-	@Column()
-	password: string;
+	@Column({ type: "varchar", nullable: true })
+	password: string | null;
+
+	@Column({ type: "varchar", nullable: true })
+	picture: string | null;
 
 	@ManyToMany(() => Role)
 	@JoinTable({ name: "user_roles" })

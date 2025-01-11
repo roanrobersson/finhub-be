@@ -34,6 +34,13 @@ export class GetUserByIdResponseDto {
 	})
 	email: string;
 
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
+
 	roles: SimplifiedRoleResponseDto[];
 
 	permissions: SimplifiedPermissionResponseDto[];

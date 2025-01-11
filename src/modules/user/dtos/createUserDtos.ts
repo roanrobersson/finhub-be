@@ -26,6 +26,13 @@ export class CreateUserBodyDto {
 		example: "12345678"
 	})
 	password: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 }
 
 export class CreateUserResponseDto {
@@ -46,6 +53,13 @@ export class CreateUserResponseDto {
 		example: "pedro@gmail.com"
 	})
 	email: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 
 	roles: SimplifiedRoleResponseDto[];
 

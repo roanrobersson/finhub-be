@@ -2,8 +2,11 @@ import * as bcrypt from "bcrypt";
 
 export const isPasswordValid = (
 	plainPassword: string,
-	hashedPassword: string
+	hashedPassword: string | null
 ): Promise<boolean> => {
+	if (!hashedPassword) {
+		return Promise.resolve(false);
+	}
 	return bcrypt.compare(plainPassword, hashedPassword);
 };
 

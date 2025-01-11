@@ -14,6 +14,7 @@ export class UpdateUserMapper {
 
 	async copyToEntity(dto: UpdateUserBodyDto, entity: User): Promise<User> {
 		entity.name = dto.name;
+		entity.picture = dto.picture;
 		return entity;
 	}
 
@@ -30,6 +31,7 @@ export class UpdateUserMapper {
 		dto.id = entity.id;
 		dto.name = entity.name;
 		dto.email = entity.email;
+		dto.picture = entity.picture;
 		dto.roles = roles.map((role) => ({
 			id: role.id,
 			name: role.name

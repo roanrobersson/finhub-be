@@ -23,6 +23,13 @@ export class UpdateUserBodyDto {
 		example: "admin"
 	})
 	name: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 }
 
 export class UpdateUserResponseDto {
@@ -43,6 +50,13 @@ export class UpdateUserResponseDto {
 		example: "pedro@gmail.com"
 	})
 	email: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 
 	roles: SimplifiedRoleResponseDto[];
 

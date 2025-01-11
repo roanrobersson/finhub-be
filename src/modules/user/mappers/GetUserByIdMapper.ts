@@ -18,6 +18,7 @@ export class GetUserByIdMapper {
 		dto.id = entity.id;
 		dto.name = entity.name;
 		dto.email = entity.email;
+		dto.picture = entity.picture;
 		dto.roles = roles.map((role) => ({
 			id: role.id,
 			name: role.name

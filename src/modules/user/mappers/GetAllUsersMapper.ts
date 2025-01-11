@@ -9,7 +9,8 @@ export class GetAllUsersMapper {
 		return entities.map((entity) => ({
 			id: entity.id,
 			name: entity.name,
-			email: entity.email
+			email: entity.email,
+			picture: entity.picture
 		}));
 	}
 }

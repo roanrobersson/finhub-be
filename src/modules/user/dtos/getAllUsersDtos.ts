@@ -18,4 +18,11 @@ export class GetAllUsersResponseDto {
 		example: "pedro@gmail.com"
 	})
 	email: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 }

@@ -45,7 +45,7 @@ export class UserService {
 	@Transactional()
 	async save(user: User): Promise<User> {
 		await this.validateUniqueUser(user);
-		if (user.isNew()) {
+		if (user.isNew() && user.password) {
 			const hashedPassword = await hashPassword(user.password);
 			user.password = hashedPassword;
 		}

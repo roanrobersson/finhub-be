@@ -16,6 +16,7 @@ export class CreateUserMapper {
 		entity.name = dto.name;
 		entity.email = dto.email;
 		entity.password = dto.password;
+		entity.picture = dto.picture;
 		return entity;
 	}
 
@@ -32,6 +33,7 @@ export class CreateUserMapper {
 		dto.id = entity.id;
 		dto.name = entity.name;
 		dto.email = entity.email;
+		dto.picture = entity.picture;
 		dto.roles = dto.roles = roles.map((role) => ({
 			id: role.id,
 			name: role.name
