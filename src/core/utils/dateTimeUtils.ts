@@ -1,5 +1,5 @@
 import ms, { StringValue } from "ms";
 
-export const timespanToMilliseconds = (value: StringValue): number => {
+export function timespanToMilliseconds(value: StringValue): number {
 	return ms(value);
-};
+}

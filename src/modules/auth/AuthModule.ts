@@ -7,10 +7,13 @@ import { UserModule } from "src/modules/user/UserModule";
 
 import { AuthController } from "./AuthController";
 import { AuthService } from "./AuthService";
-import { JwtAuthGuard } from "./JwtAuthGuard";
-import { JwtStrategy } from "./JwtStrategy";
-import { LocalStrategy } from "./LocalStrategy";
-import { RolesGuard } from "./RolesGuard";
+import { JwtAuthGuard } from "./guards/JwtAuthGuard";
+import { RolesGuard } from "./guards/RolesGuard";
+import { JwtPayloadMapper } from "./mappers/JwtPayloadMapper";
+import { UserMapper } from "./mappers/UserMapper";
+import { GoogleStrategy } from "./strategies/GoogleStrategy";
+import { JwtStrategy } from "./strategies/JwtStrategy";
+import { LocalStrategy } from "./strategies/LocalStrategy";
 
 @Module({
 	imports: [
@@ -41,7 +44,10 @@ import { RolesGuard } from "./RolesGuard";
 			useClass: RolesGuard
 		},
 		LocalStrategy,
-		JwtStrategy
+		JwtStrategy,
+		GoogleStrategy,
+		UserMapper,
+		JwtPayloadMapper
 	],
 	exports: [AuthService]
 })

@@ -4,6 +4,7 @@ import { isPasswordValid } from "src/core/utils/passwordUtils";
 
 import { User } from "../user/UserEntity";
 import { UserService } from "../user/UserService";
+import { AuthUser } from "./dtos/AuthUser";
 
 @Injectable()
 export class AuthService {
@@ -13,9 +14,12 @@ export class AuthService {
 	@Inject()
 	private userService: UserService;
 
-	async validateUser(username: string, password: string): Promise<User | null> {
+	async validateUserByEmailAndPassword(
+		email: string,
+		password: string
+	): Promise<User | null> {
 		try {
-			const user = await this.userService.findOneByUsername(username);
+			const user = await this.userService.getByEmail(email);
 			const isValidPassword = await isPasswordValid(password, user.password);
 			if (!isValidPassword) {
 				return null;
@@ -26,20 +30,23 @@ export class AuthService {
 		}
 	}
 
-	async signIn(user: User): Promise<string> {
-		const payload = await this.buildPayload(user);
-		return this.jwtService.sign(payload);
+	async validateUserByEmail(email: string): Promise<User | null> {
+		try {
+			return await this.userService.getByEmail(email);
+		} catch (error) {
+			return null;
+		}
 	}
 
-	private async buildPayload(user: User) {
-		const roles = await user.getRoles();
-		const permissions = await user.getPermissions();
-		return {
+	generateJwtToken(user: AuthUser): string {
+		const payload = {
 			sub: user.id,
 			name: user.name,
 			username: user.email,
-			roles: roles.map((role) => role.name),
-			permissions: permissions.map((permission) => permission.name)
+			picture: user.picture,
+			roles: user.roles,
+			permissions: user.permissions
 		};
+		return this.jwtService.sign(payload);
 	}
 }

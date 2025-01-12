@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class GetProfileResponseDto {
+export class ProfileResponse {
 	@ApiProperty({
 		description: "The id of the user",
 		example: "1"
@@ -18,6 +18,13 @@ export class GetProfileResponseDto {
 		example: "admin"
 	})
 	email: string;
+
+	@ApiProperty({
+		description: "The picture of the user",
+		example: "ttps://i.pravatar.cc/150?img=2",
+		nullable: true
+	})
+	picture: string | null;
 
 	@ApiProperty({
 		description: "The roles of the user",

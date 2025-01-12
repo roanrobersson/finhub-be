@@ -21,8 +21,8 @@ yarn-error.log*
 
 # Others
 .env
+envs
 yarn.lock
-.env.local
 yarn.lock
 package-lock.json
 

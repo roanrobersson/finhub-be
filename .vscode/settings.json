@@ -21,5 +21,6 @@
 		"node_modules": true,
 		"dist": true
 	},
-	"jest.runMode": "on-demand"
+	"jest.runMode": "on-demand",
+	"envSwitcher.glob.target": "**/.env"
 }

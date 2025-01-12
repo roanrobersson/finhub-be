@@ -10,7 +10,10 @@ import {
 	ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
-type ApiResponseOptions = ApiResponseNoStatusOptions & { public?: boolean };
+type ApiResponseOptions = ApiResponseNoStatusOptions & {
+	public?: boolean;
+	noRoleGuard?: boolean;
+};
 
 export function ApiDefaultGetAllResponse(options?: ApiResponseOptions) {
 	return applyDecorators(
@@ -82,15 +85,18 @@ export function ApiDefaultDeleteResponse(options?: ApiResponseOptions) {
 	);
 }
 
-type ApiDefaultResponsesOptions = { public?: boolean };
+export function ApiDefaultResponse(options?: ApiResponseOptions) {
+	const isPublic = options?.public ?? false;
+	const noRoleGuard = options?.noRoleGuard ?? false;
 
-export function ApiDefaultResponse(options?: ApiDefaultResponsesOptions) {
 	return applyDecorators(
 		ApiTooManyRequestsResponse({ description: "Too Many Requests" }),
-		Boolean(!options?.public)
+		!isPublic
 			? ApiUnauthorizedResponse({ description: "Unauthorized" })
 			: () => {},
-		ApiForbiddenResponse({ description: "Forbidden" }),
+		!isPublic && !noRoleGuard
+			? ApiForbiddenResponse({ description: "Forbidden" })
+			: () => {},
 		ApiInternalServerErrorResponse({
 			description: "Internal Server Error"
 		})

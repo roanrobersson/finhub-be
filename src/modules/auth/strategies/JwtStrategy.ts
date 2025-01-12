@@ -5,28 +5,16 @@ import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { EnvVarEnum } from "src/core/enums/EnvVarEnum";
 
-import { JWT_COOKIE_NAME } from "./constants";
-
-export type JwtData = {
-	sub: number;
-	name: string;
-	username: string;
-	roles: string[];
-	permissions: string[];
-	iat: number;
-	exp: number;
-};
-
-export type AuthUserData = {
-	id: number;
-	name: string;
-	email: string;
-	roles: string[];
-	permissions: string[];
-};
+import { JWT_COOKIE_NAME } from "../constants";
+import { AuthUser } from "../dtos/AuthUser";
+import { JwtPaylod } from "../dtos/JwtPaylod";
+import { JwtPayloadMapper } from "../mappers/JwtPayloadMapper";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
+	@Inject()
+	private jwtPayloadMapper: JwtPayloadMapper;
+
 	constructor(
 		@Inject()
 		protected configService: ConfigService
@@ -42,13 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
-	async validate(payload: JwtData): Promise<AuthUserData> {
-		return {
-			id: payload.sub,
-			name: payload.name,
-			email: payload.username,
-			roles: payload.roles,
-			permissions: payload.permissions
-		};
+	async validate(jwtPaylodDto: JwtPaylod): Promise<AuthUser> {
+		return this.jwtPayloadMapper.toAuthUser(jwtPaylodDto);
 	}
 }

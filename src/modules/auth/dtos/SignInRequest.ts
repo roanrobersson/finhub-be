@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 
-export class SignInBodyDto {
+export class SignInRequest {
 	@IsNotEmpty()
 	@ApiProperty({
 		description: "The username of the user",
@@ -15,12 +15,4 @@ export class SignInBodyDto {
 		example: "12345678"
 	})
 	password: string;
-}
-
-export class SignInResponseDto {
-	@ApiProperty({
-		description: "The message of the response",
-		example: "The user has been successfully signed in."
-	})
-	message: string;
 }
