@@ -28,15 +28,15 @@ export class UserService {
 		return user;
 	}
 
-	async findOneByUsername(username: string): Promise<User> {
+	async getByEmail(email: string): Promise<User> {
 		const user = await this.userRepository.findOne({
-			where: { email: username },
+			where: { email },
 			relations: ["roles", "roles.permissions"]
 		});
 		if (!user) {
 			throw new UserNotFoundException(
 				null,
-				`User with email ${username} not found`
+				`User with email ${email} not found`
 			);
 		}
 		return user;

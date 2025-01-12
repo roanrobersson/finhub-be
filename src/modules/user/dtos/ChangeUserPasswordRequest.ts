@@ -1,18 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { IsId } from "src/core/decorators/IsIdDecorator";
 import { IsPassword } from "src/core/decorators/IsPasswordValidDecorator";
 
-export class ChangeUserPasswordParamsDto {
-	@IsId()
-	@ApiProperty({
-		description: "The id of the user",
-		example: 1
-	})
-	userId: number;
-}
-
-export class ChangeUserPasswordBodyDto {
+export class ChangeUserPasswordRequest {
 	@IsNotEmpty()
 	@ApiProperty({
 		description: "The current password",

@@ -3,8 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { PermissionModule } from "../permission/PermissionModule";
 import { CreateRoleMapper } from "./mappers/CreateRoleMapper";
-import { GetAllRolesMapper } from "./mappers/GetAllRolesMapper";
-import { GetRoleByIdMapper } from "./mappers/GetRoleByIdMapper";
+import { RoleResponseMapper } from "./mappers/RoleResponseMapper";
+import { RoleSimplifiedResponseMapper } from "./mappers/RoleSimplifiedResponseMapper";
 import { UpdateRoleMapper } from "./mappers/UpdateRoleMapper";
 import { RoleController } from "./RoleController";
 import { Role } from "./RoleEntity";
@@ -18,10 +18,10 @@ import { RoleService } from "./RoleService";
 	providers: [
 		RoleService,
 		RoleRepository,
-		GetAllRolesMapper,
-		GetRoleByIdMapper,
 		CreateRoleMapper,
-		UpdateRoleMapper
+		UpdateRoleMapper,
+		RoleResponseMapper,
+		RoleSimplifiedResponseMapper
 	],
 	exports: [RoleService, RoleRepository]
 })

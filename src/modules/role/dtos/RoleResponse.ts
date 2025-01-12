@@ -1,18 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsId } from "src/core/decorators/IsIdDecorator";
 
-import { SimplifiedPermissionResponseDto } from "./commonDtos";
+import { PermissionSimplifiedResponse } from "./PermissionSimplifiedResponse";
 
-export class GetRoleByIdParamsDto {
-	@IsId()
-	@ApiProperty({
-		description: "The id of the role",
-		example: 1
-	})
-	roleId: number;
-}
-
-export class GetRoleByIdResponseDto {
+export class RoleResponse {
 	@ApiProperty({
 		description: "The id of the role",
 		example: 1
@@ -31,5 +21,5 @@ export class GetRoleByIdResponseDto {
 	})
 	description: string;
 
-	permissions: SimplifiedPermissionResponseDto[];
+	permissions: PermissionSimplifiedResponse[];
 }

@@ -26,29 +26,21 @@ import { Public } from "src/core/decorators/PublicDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 import { Roles } from "src/modules/auth/RolesDecorator";
 
+import { ChangeUserPasswordRequest } from "./dtos/ChangeUserPasswordRequest";
+import { CreateUserRequest } from "./dtos/CreateUserRequest";
 import {
-	ChangeUserPasswordBodyDto,
-	ChangeUserPasswordParamsDto
-} from "./dtos/changeUserPasswordDtos";
-import {
-	CreateUserBodyDto,
-	CreateUserResponseDto
-} from "./dtos/createUserDtos";
-import { DeleteUserParams } from "./dtos/deleteUserDtos";
-import { GetAllUsersResponseDto } from "./dtos/getAllUsersDtos";
-import {
+	ChangeUserPasswordParams,
+	DeleteUserParams,
 	GetUserByIdParams,
-	GetUserByIdResponseDto
-} from "./dtos/getUserByIdDtos";
-import {
-	UpdateUserBodyDto,
-	UpdateUserParamsDto,
-	UpdateUserResponseDto
-} from "./dtos/updateUserDtos";
+	UpdateUserParams
+} from "./dtos/params";
+import { UpdateUserRequest } from "./dtos/UpdateUserRequest";
+import { UserResponse } from "./dtos/UserResponse";
+import { UserSimplifiedResponse } from "./dtos/UserSimplifiedResponse";
 import { CreateUserMapper } from "./mappers/CreateUserMapper";
-import { GetAllUsersMapper } from "./mappers/GetAllUsersMapper";
-import { GetUserByIdMapper } from "./mappers/GetUserByIdMapper";
 import { UpdateUserMapper } from "./mappers/UpdateUserMapper";
+import { UserResponseMapper } from "./mappers/UserResponseMapper";
+import { UserSimplifiedResponseMapper } from "./mappers/UserSimplifiedResponseMapper";
 import { UserService } from "./UserService";
 
 @ApiBearerAuth()
@@ -57,71 +49,69 @@ export class UserController {
 	@Inject(UserService)
 	private userService: UserService;
 
-	@Inject(GetAllUsersMapper)
-	private getAllUsersMapper: GetAllUsersMapper;
-
-	@Inject(GetUserByIdMapper)
-	private getUserByIdMapper: GetUserByIdMapper;
-
-	@Inject(CreateUserMapper)
+	@Inject()
 	private createUserMapper: CreateUserMapper;
 
-	@Inject(UpdateUserMapper)
-	private udateUserMapper: UpdateUserMapper;
+	@Inject()
+	private updateUserMapper: UpdateUserMapper;
+
+	@Inject()
+	private userResponseMapper: UserResponseMapper;
+
+	@Inject()
+	private userSimplifiedResponseMapper: UserSimplifiedResponseMapper;
 
 	@Get()
 	@Roles(RoleEnum.ADMIN)
 	@ApiOperation({ summary: "List all users" })
 	@ApiDefaultGetAllResponse({
-		type: GetAllUsersResponseDto,
+		type: UserSimplifiedResponse,
 		isArray: true
 	})
-	async getAll(): Promise<GetAllUsersResponseDto[]> {
+	async getAll(): Promise<UserSimplifiedResponse[]> {
 		const users = await this.userService.getAll();
-		return this.getAllUsersMapper.toResponse(users);
+		return users.map((user) =>
+			this.userSimplifiedResponseMapper.toSimplifiedResponse(user)
+		);
 	}
 
 	@Get(":userId")
 	@ApiOperation({ summary: "Find a user by id" })
 	@ApiDefaultGetByIdResponse({
-		type: GetUserByIdResponseDto
+		type: UserResponse
 	})
-	async getById(
-		@Param() params: GetUserByIdParams
-	): Promise<GetUserByIdResponseDto> {
+	async getById(@Param() params: GetUserByIdParams): Promise<UserResponse> {
 		const user = await this.userService.getById(params.userId);
-		return this.getUserByIdMapper.toResponse(user);
+		return this.userResponseMapper.toResponse(user);
 	}
 
 	@Post()
 	@Public()
 	@ApiOperation({ summary: "Create a new user" })
 	@ApiDefaultCreateResponse({
-		type: CreateUserBodyDto,
+		type: UserResponse,
 		public: true
 	})
-	async create(
-		@Body() body: CreateUserBodyDto
-	): Promise<CreateUserResponseDto> {
-		let user = await this.createUserMapper.toEntity(body);
+	async create(@Body() body: CreateUserRequest): Promise<UserResponse> {
+		let user = this.createUserMapper.toEntity(body);
 		user = await this.userService.save(user);
-		return this.createUserMapper.toResponse(user);
+		return this.userResponseMapper.toResponse(user);
 	}
 
 	@Put(":userId")
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a user by id" })
 	@ApiDefaultUpdateResponse({
-		type: CreateUserBodyDto
+		type: UserResponse
 	})
 	async update(
-		@Param() params: UpdateUserParamsDto,
-		@Body() body: UpdateUserBodyDto
-	): Promise<UpdateUserResponseDto> {
+		@Param() params: UpdateUserParams,
+		@Body() body: UpdateUserRequest
+	): Promise<UserResponse> {
 		let user = await this.userService.getById(params.userId);
-		await this.udateUserMapper.copyToEntity(body, user);
+		this.updateUserMapper.copyToEntity(body, user);
 		user = await this.userService.save(user);
-		return this.udateUserMapper.toResponse(user);
+		return this.userResponseMapper.toResponse(user);
 	}
 
 	@Put(":userId/change-password")
@@ -131,10 +121,10 @@ export class UserController {
 		description: "The password has been successfully updated."
 	})
 	async changePassword(
-		@Param() params: ChangeUserPasswordParamsDto,
-		@Body() body: ChangeUserPasswordBodyDto
+		@Param() params: ChangeUserPasswordParams,
+		@Body() body: ChangeUserPasswordRequest
 	): Promise<void> {
-		return this.userService.changePassword(
+		await this.userService.changePassword(
 			params.userId,
 			body.currentPassword,
 			body.newPassword

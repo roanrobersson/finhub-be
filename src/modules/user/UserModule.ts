@@ -2,9 +2,9 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { CreateUserMapper } from "./mappers/CreateUserMapper";
-import { GetAllUsersMapper } from "./mappers/GetAllUsersMapper";
-import { GetUserByIdMapper } from "./mappers/GetUserByIdMapper";
 import { UpdateUserMapper } from "./mappers/UpdateUserMapper";
+import { UserResponseMapper } from "./mappers/UserResponseMapper";
+import { UserSimplifiedResponseMapper } from "./mappers/UserSimplifiedResponseMapper";
 import { UserController } from "./UserController";
 import { User } from "./UserEntity";
 import { UserRepository } from "./UserRepository";
@@ -16,11 +16,10 @@ import { UserService } from "./UserService";
 	providers: [
 		UserService,
 		UserRepository,
-		GetAllUsersMapper,
-		GetUserByIdMapper,
 		CreateUserMapper,
-		GetUserByIdMapper,
-		UpdateUserMapper
+		UpdateUserMapper,
+		UserResponseMapper,
+		UserSimplifiedResponseMapper
 	],
 	exports: [UserService, UserRepository]
 })

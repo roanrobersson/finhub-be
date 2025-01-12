@@ -5,13 +5,9 @@ import {
 	ApiDefaultGetByIdResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
 
-import { GetAllPermissionsResponseDto } from "./dtos/getAllPermissionsDtos";
-import {
-	GetPermissionByIdParams,
-	GetPermisssionByIdResponse
-} from "./dtos/getPermissionByIdDtos";
-import { GetAllPermissionsMapper } from "./mappers/GetAllPermissionMapper";
-import { GetPermissionByIdMapper } from "./mappers/GetPermissionByIdMapper";
+import { GetPermissionByIdParams } from "./dtos/params";
+import { PermisssionResponse } from "./dtos/PermisssionResponse";
+import { PermissionResponseMapper } from "./mappers/PermissionResponseMapper";
 import { PermissionService } from "./PermissionService";
 
 @Controller("permissions")
@@ -20,34 +16,33 @@ export class PermissionController {
 	private permissionService: PermissionService;
 
 	@Inject()
-	private getAllPermissionsMapper: GetAllPermissionsMapper;
-
-	@Inject()
-	private getPermissionByIdMapper: GetPermissionByIdMapper;
+	private permissionResponseMapper: PermissionResponseMapper;
 
 	@Get()
 	@ApiOperation({ summary: "List all permissions" })
 	@ApiDefaultGetAllResponse({
-		type: GetAllPermissionsResponseDto,
+		type: PermisssionResponse,
 		isArray: true
 	})
-	async getAll(): Promise<GetAllPermissionsResponseDto[]> {
+	async getAll(): Promise<PermisssionResponse[]> {
 		const permissions = await this.permissionService.getAll();
-		return await this.getAllPermissionsMapper.toResponse(permissions);
+		return permissions.map((permission) =>
+			this.permissionResponseMapper.toResponse(permission)
+		);
 	}
 
 	@Get(":permissionId")
 	@ApiOperation({ summary: "Find a permission by id" })
-	@ApiResponse({ type: GetPermisssionByIdResponse })
+	@ApiResponse({ type: PermisssionResponse })
 	@ApiDefaultGetByIdResponse({
-		type: GetPermisssionByIdResponse
+		type: PermisssionResponse
 	})
 	async getById(
 		@Param() params: GetPermissionByIdParams
-	): Promise<GetPermisssionByIdResponse> {
+	): Promise<PermisssionResponse> {
 		const permission = await this.permissionService.getById(
 			params.permissionId
 		);
-		return await this.getPermissionByIdMapper.toResponse(permission);
+		return this.permissionResponseMapper.toResponse(permission);
 	}
 }

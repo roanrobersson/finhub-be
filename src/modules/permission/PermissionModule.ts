@@ -4,8 +4,7 @@ import { PermissionController } from "src/modules/permission/PermissionControlle
 import { Permission } from "src/modules/permission/PermissionEntity";
 import { PermissionService } from "src/modules/permission/PermissionService";
 
-import { GetAllPermissionsMapper } from "./mappers/GetAllPermissionMapper";
-import { GetPermissionByIdMapper } from "./mappers/GetPermissionByIdMapper";
+import { PermissionResponseMapper } from "./mappers/PermissionResponseMapper";
 import { PermissionRepository } from "./PermissionRepository";
 
 @Module({
@@ -14,8 +13,7 @@ import { PermissionRepository } from "./PermissionRepository";
 	providers: [
 		PermissionService,
 		PermissionRepository,
-		GetAllPermissionsMapper,
-		GetPermissionByIdMapper
+		PermissionResponseMapper
 	],
 	exports: [PermissionService, PermissionRepository]
 })

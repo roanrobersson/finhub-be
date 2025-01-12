@@ -1,18 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { GetRoleByIdResponseDto } from "../dtos/getRoleByIdDtos";
+import { RoleResponse } from "../dtos/RoleResponse";
 import { Role } from "../RoleEntity";
 
 @Injectable()
-export class GetRoleByIdMapper {
-	async toResponse(entity: Role): Promise<GetRoleByIdResponseDto> {
-		return this.copyToResponse(entity, new GetRoleByIdResponseDto());
+export class RoleResponseMapper {
+	async toResponse(entity: Role): Promise<RoleResponse> {
+		return this.copyToResponse(entity, new RoleResponse());
 	}
 
-	async copyToResponse(
-		entity: Role,
-		dto: GetRoleByIdResponseDto
-	): Promise<GetRoleByIdResponseDto> {
+	async copyToResponse(entity: Role, dto: RoleResponse): Promise<RoleResponse> {
 		const permissions = await entity.getPermissions();
 		dto.id = entity.id;
 		dto.name = entity.name;

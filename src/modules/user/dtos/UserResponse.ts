@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { PermissionSimplifiedResponse } from "src/modules/role/dtos/PermissionSimplifiedResponse";
+import { RoleSimplifiedResponse } from "src/modules/role/dtos/RoleSimplifiedResponse";
 
-export class GetAllUsersResponseDto {
+export class UserResponse {
 	@ApiProperty({
 		description: "The id of the user",
 		example: "1"
@@ -25,4 +27,8 @@ export class GetAllUsersResponseDto {
 		nullable: true
 	})
 	picture: string | null;
+
+	roles: RoleSimplifiedResponse[];
+
+	permissions: PermissionSimplifiedResponse[];
 }

@@ -12,8 +12,10 @@ import { ApiDefaultActionResponse } from "src/core/decorators/ApiDefaultResponse
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
 import { Roles } from "../auth/RolesDecorator";
-import { AssociateRolePermissionParams } from "./dtos/associateDtos";
-import { DesassociateRolePermissionParams } from "./dtos/disassociateDtos";
+import {
+	AssociateRolePermissionParams,
+	DesassociateRolePermissionParams
+} from "./dtos/params";
 import { RoleService } from "./RoleService";
 
 @Controller("roles/:roleId/permissions")

@@ -21,22 +21,19 @@ import {
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
 import { Roles } from "../auth/RolesDecorator";
+import { CreateRoleRequest } from "./dtos/CreateRoleRequest";
 import {
-	CreateRoleBodyDto,
-	CreateRoleResponseDto
-} from "./dtos/createRoleDtos";
-import { DeleteRoleParams } from "./dtos/deleteRoleDtos";
-import { GetAllRolesResponseDto } from "./dtos/getAllRolesDtos";
-import {
-	GetRoleByIdParamsDto,
-	GetRoleByIdResponseDto
-} from "./dtos/getRoleByIdDtos";
-import {
-	UpdateRoleBodyDto,
-	UpdateRoleParamsDto,
-	UpdateRoleResponseDto
-} from "./dtos/updateRoleDtos";
-import { Role } from "./RoleEntity";
+	DeleteRoleParams,
+	GetRoleByIdParams,
+	UpdateRoleParams
+} from "./dtos/params";
+import { RoleResponse } from "./dtos/RoleResponse";
+import { RoleSimplifiedResponse } from "./dtos/RoleSimplifiedResponse";
+import { UpdateRoleRequest } from "./dtos/UpdateRoleRequest";
+import { CreateRoleMapper } from "./mappers/CreateRoleMapper";
+import { RoleResponseMapper } from "./mappers/RoleResponseMapper";
+import { RoleSimplifiedResponseMapper } from "./mappers/RoleSimplifiedResponseMapper";
+import { UpdateRoleMapper } from "./mappers/UpdateRoleMapper";
 import { RoleService } from "./RoleService";
 
 @Controller("roles")
@@ -44,52 +41,51 @@ export class RoleController {
 	@Inject()
 	private roleService: RoleService;
 
+	@Inject()
+	private createRoleMapper: CreateRoleMapper;
+
+	@Inject()
+	private updateRoleMapper: UpdateRoleMapper;
+
+	@Inject()
+	private roleResponseMapper: RoleResponseMapper;
+
+	@Inject()
+	private roleSimplifiedResponseMapper: RoleSimplifiedResponseMapper;
+
 	@Get()
 	@ApiOperation({ summary: "List all roles" })
 	@ApiDefaultGetAllResponse({
-		type: GetAllRolesResponseDto,
+		type: RoleResponse,
 		isArray: true
 	})
-	async getAll(): Promise<GetAllRolesResponseDto[]> {
+	async getAll(): Promise<RoleSimplifiedResponse[]> {
 		const roles = await this.roleService.getAll();
-		// return plainToInstance(GetAllRolesResponseDto, roles, {
-		// 	excludeExtraneousValues: true
-		// });
-		return roles;
+		return roles.map((role) =>
+			this.roleSimplifiedResponseMapper.toResponse(role)
+		);
 	}
 
 	@Get(":roleId")
 	@ApiOperation({ summary: "Find a role by id" })
 	@ApiDefaultGetByIdResponse({
-		type: GetRoleByIdResponseDto
+		type: RoleResponse
 	})
-	async getById(
-		@Param() params: GetRoleByIdParamsDto
-	): Promise<GetRoleByIdResponseDto> {
+	async getById(@Param() params: GetRoleByIdParams): Promise<RoleResponse> {
 		const role = await this.roleService.getById(params.roleId);
-		// return plainToInstance(GetRoleByIdResponseDto, role, {
-		// 	excludeExtraneousValues: true
-		// });
-		return role as any;
+		return this.roleResponseMapper.toResponse(role);
 	}
 
 	@Post()
 	@Roles(RoleEnum.ADMIN)
 	@ApiOperation({ summary: "Create a new role" })
 	@ApiDefaultCreateResponse({
-		type: CreateRoleResponseDto
+		type: RoleResponse
 	})
-	async create(
-		@Body() body: CreateRoleBodyDto
-	): Promise<CreateRoleResponseDto> {
-		let role = new Role();
-		role.name = body.name;
-		role.description = body.description;
+	async create(@Body() body: CreateRoleRequest): Promise<RoleResponse> {
+		let role = this.createRoleMapper.toEntity(body);
 		role = await this.roleService.save(role);
-		// return plainToInstance(CreateRoleResponseDto, role, {
-		// 	excludeExtraneousValues: true
-		// });
-		return role as any;
+		return this.roleResponseMapper.toResponse(role);
 	}
 
 	@Put(":roleId")
@@ -97,20 +93,16 @@ export class RoleController {
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a role by id" })
 	@ApiDefaultUpdateResponse({
-		type: UpdateRoleResponseDto
+		type: RoleResponse
 	})
 	async update(
-		@Param() params: UpdateRoleParamsDto,
-		@Body() body: UpdateRoleBodyDto
-	): Promise<UpdateRoleResponseDto> {
+		@Param() params: UpdateRoleParams,
+		@Body() body: UpdateRoleRequest
+	): Promise<RoleResponse> {
 		let role = await this.roleService.getById(params.roleId);
-		role.name = body.name;
-		role.description = body.description;
+		this.updateRoleMapper.copyToEntity(body, role);
 		role = await this.roleService.save(role);
-		// return plainToInstance(UpdateRoleResponseDto, role, {
-		// 	excludeExtraneousValues: true
-		// });
-		return role as any;
+		return this.roleResponseMapper.toResponse(role);
 	}
 
 	@Delete(":roleId")
