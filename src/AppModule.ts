@@ -11,6 +11,7 @@ import { Role } from "../src/modules/role/RoleEntity";
 import { User } from "../src/modules/user/UserEntity";
 import { AppController } from "./AppController";
 import { AuthModule } from "./modules/auth/AuthModule";
+import { EmailModule } from "./modules/email/EmailModule";
 import { PermissionModule } from "./modules/permission/PermissionModule";
 import { RoleModule } from "./modules/role/RoleModule";
 import { UserModule } from "./modules/user/UserModule";
@@ -45,7 +46,8 @@ import { UserModule } from "./modules/user/UserModule";
 		AuthModule,
 		UserModule,
 		RoleModule,
-		PermissionModule
+		PermissionModule,
+		EmailModule
 	],
 	controllers: [AppController],
 	providers: [
