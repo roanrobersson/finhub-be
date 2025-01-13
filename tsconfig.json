@@ -18,6 +18,7 @@
 		"strictBindCallApply": false,
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": false,
-		"strictPropertyInitialization": false
+		"strictPropertyInitialization": false,
+		"esModuleInterop": true // needed for @sendgrid/mail import
 	}
 }

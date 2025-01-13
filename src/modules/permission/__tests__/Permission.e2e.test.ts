@@ -4,7 +4,7 @@ import { dataSource } from "database/dataSource";
 import { AppModule } from "src/AppModule";
 import { hashPassword } from "src/core/utils/passwordUtils";
 import { User } from "src/modules/user/UserEntity";
-import * as request from "supertest";
+import request from "supertest";
 import { Repository } from "typeorm";
 import {
 	initializeTransactionalContext,
