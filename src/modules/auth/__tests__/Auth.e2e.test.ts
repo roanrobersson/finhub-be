@@ -1,74 +1,100 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Test, TestingModule } from "@nestjs/testing";
 import { dataSource } from "database/dataSource";
-import { AppModule } from "src/AppModule";
-import { hashPassword } from "src/core/utils/passwordUtils";
+import createLoggedInAgent from "src/__testUtils__/createLoggedInAgent";
+import createTestApp from "src/__testUtils__/createTestApp";
+import { createFakeUser } from "src/__testUtils__/fakes/fakeUser";
+import TestAccounts from "src/__testUtils__/TestAccounts";
 import { User } from "src/modules/user/UserEntity";
 import request from "supertest";
 import { Repository } from "typeorm";
-import {
-	initializeTransactionalContext,
-	StorageDriver
-} from "typeorm-transactional";
 
 describe("Auth E2E", () => {
 	let app: INestApplication;
 	let userRepository: Repository<User>;
 
-	initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
-
 	beforeAll(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule]
-		}).compile();
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createTestApp();
 		await initDatabase();
 	});
 
 	afterAll(async () => {
-		await app.close();
 		await userRepository.delete({});
+		await app.close();
 	});
 
 	const initDatabase = async () => {
 		await dataSource.initialize();
 		userRepository = dataSource.getRepository(User);
-		await userRepository.save({
-			name: "Test",
-			email: "test@gmail.com",
-			password: await hashPassword("test")
-		});
+		const user = await createFakeUser();
+		await userRepository.save(user);
 	};
 
-	describe("GET /auth/signin", () => {
-		it("should return HTTP 401 when invalid credentials", () => {
-			return request(app.getHttpServer())
+	describe("POST /auth/signin", () => {
+		it("should return HTTP 401 when invalid credentials", async () => {
+			const response = await request(app.getHttpServer())
 				.post("/auth/signin")
 				.send({
 					username: "invalid@gmail.com",
 					password: "invalid"
-				})
-				.expect(HttpStatus.UNAUTHORIZED);
+				});
+
+			expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
 		});
 
-		it("should return HTTP 200 and token data when valid credentials", async () => {
+		it("should return HTTP 200 and auth cookie when valid credentials", async () => {
 			const secret = process.env.JWT_SECRET!;
 			const jwtService = new JwtService({ secret });
 
 			const response = await request(app.getHttpServer())
 				.post("/auth/signin")
-				.send({
-					username: "test@gmail.com",
-					password: "test"
-				})
-				.expect(HttpStatus.OK);
+				.send(TestAccounts.USER);
 
-			expect(response).toHaveProperty("body.access_token");
-			const { access_token } = response.body;
-			await jwtService.verifyAsync(access_token, {
+			expect(response.status).toBe(HttpStatus.OK);
+			expect(response.headers["set-cookie"]).toBeDefined();
+			expect(response.headers["set-cookie"][0]).toMatch(/access_token=.*/);
+			const authCookie = response.headers["set-cookie"][0];
+			const token = authCookie.split(";")[0].split("=")[1];
+			await jwtService.verifyAsync(token, {
 				secret: secret
+			});
+		});
+	});
+
+	describe("POST /auth/signout", () => {
+		it("should return HTTP 200 when user is not authenticated", async () => {
+			const response = await request(app.getHttpServer()).post("/auth/signout");
+
+			expect(response.status).toBe(HttpStatus.OK);
+		});
+
+		it("should return HTTP 200 and remove auth cookie", async () => {
+			const agent = await createLoggedInAgent(app, TestAccounts.USER);
+			const response = await agent.post("/auth/signout");
+
+			expect(response.status).toBe(HttpStatus.OK);
+			expect(response.headers["set-cookie"]).toBeDefined();
+			expect(response.headers["set-cookie"][0]).toMatch(/access_token=;/); // Empty cookie
+		});
+	});
+
+	describe("GET /auth/profile", () => {
+		it("should return HTTP 401 when user not authenticated", async () => {
+			const response = await request(app.getHttpServer()).get("/auth/profile");
+
+			expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+		});
+
+		it("should return HTTP 200 and user profile when user authenticated", async () => {
+			const agent = await createLoggedInAgent(app, TestAccounts.USER);
+			const response = await agent.get("/auth/profile");
+
+			const fakeUser = await createFakeUser();
+			expect(response.status).toBe(HttpStatus.OK);
+			expect(response.body).toMatchObject({
+				name: fakeUser.name,
+				email: fakeUser.email,
+				picture: fakeUser.picture
 			});
 		});
 	});
