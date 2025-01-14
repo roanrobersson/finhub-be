@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString } from "class-validator";
 import { IsId } from "src/core/decorators/IsIdDecorator";
 
 export class GetRoleByIdParams {
@@ -8,6 +9,15 @@ export class GetRoleByIdParams {
 		example: 1
 	})
 	roleId: number;
+}
+
+export class GetRoleByNameParams {
+	@IsString()
+	@ApiProperty({
+		description: "The name of the role",
+		example: "admin"
+	})
+	name: string;
 }
 
 export class UpdateRoleParams {

@@ -1,8 +1,8 @@
 import { EntityNotFoundException } from "../../../core/exceptions/EntityNotFoundException";
 
 export class PermissionNotFoundException extends EntityNotFoundException {
-	constructor(id: number) {
-		super(`Permission with id ${id} not found`);
+	constructor(identifier: string | number) {
+		super(`Permission '${identifier}' not found`);
 		this.name = "PermissionNotFoundException";
 	}
 }

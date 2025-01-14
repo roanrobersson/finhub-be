@@ -5,11 +5,14 @@ import { JwtModule } from "@nestjs/jwt";
 import { EnvVarEnum } from "src/core/enums/EnvVarEnum";
 import { UserModule } from "src/modules/user/UserModule";
 
+import { RoleModule } from "../role/RoleModule";
 import { AuthController } from "./AuthController";
 import { AuthService } from "./AuthService";
 import { JwtAuthGuard } from "./guards/JwtAuthGuard";
 import { RolesGuard } from "./guards/RolesGuard";
+import { AuthUserMapper } from "./mappers/AuthRequestMapper";
 import { JwtPayloadMapper } from "./mappers/JwtPayloadMapper";
+import { SignUpMapper } from "./mappers/SignUpMapper";
 import { UserMapper } from "./mappers/UserMapper";
 import { GoogleStrategy } from "./strategies/GoogleStrategy";
 import { JwtStrategy } from "./strategies/JwtStrategy";
@@ -18,6 +21,7 @@ import { LocalStrategy } from "./strategies/LocalStrategy";
 @Module({
 	imports: [
 		UserModule,
+		RoleModule,
 		ConfigModule.forRoot({
 			isGlobal: true
 		}),
@@ -34,7 +38,6 @@ import { LocalStrategy } from "./strategies/LocalStrategy";
 	],
 	controllers: [AuthController],
 	providers: [
-		AuthService,
 		{
 			provide: APP_GUARD,
 			useClass: JwtAuthGuard
@@ -43,12 +46,25 @@ import { LocalStrategy } from "./strategies/LocalStrategy";
 			provide: APP_GUARD,
 			useClass: RolesGuard
 		},
+
+		AuthService,
+
 		LocalStrategy,
 		JwtStrategy,
 		GoogleStrategy,
+
 		UserMapper,
-		JwtPayloadMapper
+		JwtPayloadMapper,
+		SignUpMapper,
+		AuthUserMapper
 	],
-	exports: [AuthService]
+	exports: [
+		AuthService,
+
+		UserMapper,
+		JwtPayloadMapper,
+		SignUpMapper,
+		AuthUserMapper
+	]
 })
 export class AuthModule {}

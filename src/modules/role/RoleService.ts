@@ -30,6 +30,17 @@ export class RoleService {
 		return role;
 	}
 
+	async getByName(name: string): Promise<Role> {
+		const role = await this.roleRepository.findOne({
+			where: { name },
+			relations: ["permissions"]
+		});
+		if (!role) {
+			throw new RoleNotFoundException(name);
+		}
+		return role;
+	}
+
 	@Transactional()
 	async save(role: Role): Promise<Role> {
 		await this.validateUniqueRole(role);

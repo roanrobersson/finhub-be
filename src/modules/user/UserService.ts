@@ -34,10 +34,7 @@ export class UserService {
 			relations: ["roles", "roles.permissions"]
 		});
 		if (!user) {
-			throw new UserNotFoundException(
-				null,
-				`User with email ${email} not found`
-			);
+			throw new UserNotFoundException(email);
 		}
 		return user;
 	}

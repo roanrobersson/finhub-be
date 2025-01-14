@@ -17,12 +17,21 @@ import { RoleService } from "./RoleService";
 	controllers: [RoleController, RolePermissionController],
 	providers: [
 		RoleService,
+
 		RoleRepository,
+
 		CreateRoleMapper,
 		UpdateRoleMapper,
 		RoleResponseMapper,
 		RoleSimplifiedResponseMapper
 	],
-	exports: [RoleService, RoleRepository]
+	exports: [
+		RoleService,
+
+		CreateRoleMapper,
+		UpdateRoleMapper,
+		RoleResponseMapper,
+		RoleSimplifiedResponseMapper
+	]
 })
 export class RoleModule {}

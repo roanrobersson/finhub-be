@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class UpdateUserRequest {
 	@IsNotEmpty()
@@ -9,6 +9,7 @@ export class UpdateUserRequest {
 	})
 	name: string;
 
+	@IsOptional()
 	@ApiProperty({
 		description: "The picture of the user",
 		example: "ttps://i.pravatar.cc/150?img=2",

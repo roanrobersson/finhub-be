@@ -6,16 +6,12 @@ import { Strategy } from "passport-custom";
 import { EnvVarEnum } from "src/core/enums/EnvVarEnum";
 
 import { User } from "../../user/UserEntity";
-import { UserService } from "../../user/UserService";
 import { AuthService } from "../AuthService";
 import { AuthUser } from "../dtos/AuthUser";
 import { UserMapper } from "../mappers/UserMapper";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
-	@Inject()
-	private userService: UserService;
-
 	@Inject()
 	private authService: AuthService;
 
@@ -37,7 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 			user.email = payload.email;
 			user.name = payload.name;
 			user.picture = payload.picture ?? null;
-			user = await this.userService.save(user);
+			user = await this.authService.signUp(user);
 		}
 		const authUser = await this.userMapper.toAuthUser(user);
 		authUser.isNewUser = isNewUser;

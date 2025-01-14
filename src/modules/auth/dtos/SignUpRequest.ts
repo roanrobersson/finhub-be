@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 import { IsPassword } from "src/core/decorators/IsPasswordValidDecorator";
 
-export class CreateUserRequest {
+export class SignUpRequest {
 	@IsNotEmpty()
 	@ApiProperty({ description: "The name of the user", example: "Pedro" })
 	name: string;
@@ -22,9 +22,10 @@ export class CreateUserRequest {
 	})
 	password: string;
 
+	@IsOptional()
 	@ApiProperty({
 		description: "The picture of the user",
-		example: "ttps://i.pravatar.cc/150?img=2",
+		example: "https://i.pravatar.cc/150?img=2",
 		nullable: true
 	})
 	picture: string | null;

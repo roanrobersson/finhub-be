@@ -12,9 +12,11 @@ import { PermissionRepository } from "./PermissionRepository";
 	controllers: [PermissionController],
 	providers: [
 		PermissionService,
+
 		PermissionRepository,
+
 		PermissionResponseMapper
 	],
-	exports: [PermissionService, PermissionRepository]
+	exports: [PermissionService, PermissionResponseMapper]
 })
 export class PermissionModule {}

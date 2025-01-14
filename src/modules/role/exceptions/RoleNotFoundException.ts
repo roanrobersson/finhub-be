@@ -1,8 +1,8 @@
 import { EntityNotFoundException } from "../../../core/exceptions/EntityNotFoundException";
 
 export class RoleNotFoundException extends EntityNotFoundException {
-	constructor(id: number) {
-		super(`Role with id ${id} not found`);
+	constructor(identifier: string | number, description?: string) {
+		super(`Role '${identifier}' not found`, description);
 		this.name = "RoleNotFoundException";
 	}
 }

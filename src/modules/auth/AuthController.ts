@@ -1,4 +1,5 @@
 import {
+	Body,
 	Controller,
 	Get,
 	HttpCode,
@@ -15,6 +16,7 @@ import { Response } from "express";
 import { StringValue } from "ms";
 import {
 	ApiDefaultActionResponse,
+	ApiDefaultCreateResponse,
 	ApiDefaultGetResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { Public } from "src/core/decorators/PublicDecorator";
@@ -22,14 +24,19 @@ import { EnvEnum } from "src/core/enums/EnvEnum";
 import { EnvVarEnum } from "src/core/enums/EnvVarEnum";
 import { timespanToMilliseconds } from "src/core/utils/dateTimeUtils";
 
+import { UserSimplifiedResponse } from "../user/dtos/UserSimplifiedResponse";
 import { AuthService } from "./AuthService";
 import { JWT_COOKIE_NAME } from "./constants";
 import { AuthRequest } from "./dtos/AuthRequest";
 import { AuthResponse } from "./dtos/AuthResponse";
 import { AuthUser } from "./dtos/AuthUser";
 import { ProfileResponse } from "./dtos/ProfileResponse";
+import { SignUpRequest } from "./dtos/SignUpRequest";
 import { GoogleOauthGuard } from "./guards/GoogleOauthGuard";
 import { LocalAuthGuard } from "./guards/LocalAuthGuard";
+import { AuthUserMapper } from "./mappers/AuthRequestMapper";
+import { SignUpMapper } from "./mappers/SignUpMapper";
+import { UserMapper } from "./mappers/UserMapper";
 
 @Controller("auth")
 export class AuthController {
@@ -38,6 +45,15 @@ export class AuthController {
 
 	@Inject()
 	private authService: AuthService;
+
+	@Inject()
+	private signUpMapper: SignUpMapper;
+
+	@Inject()
+	private userMapper: UserMapper;
+
+	@Inject()
+	private authUserMapper: AuthUserMapper;
 
 	@Post("signin")
 	@Public()
@@ -87,6 +103,25 @@ export class AuthController {
 		return { message: "The user has been successfully signed in." };
 	}
 
+	@Post("signup")
+	@Public()
+	@HttpCode(HttpStatus.CREATED)
+	@ApiOperation({ summary: "Sign up" })
+	@ApiDefaultCreateResponse({
+		type: UserSimplifiedResponse,
+		public: true
+	})
+	async signUp(
+		@Body() body: SignUpRequest,
+		@Res({ passthrough: true }) res: Response
+	): Promise<UserSimplifiedResponse> {
+		let user = this.signUpMapper.toEntity(body);
+		user = await this.authService.signUp(user);
+		const authUser = await this.userMapper.toAuthUser(user);
+		await this.setAuthCookie(res, authUser);
+		return this.authUserMapper.toProfile(authUser);
+	}
+
 	@Post("signout")
 	@Public()
 	@HttpCode(HttpStatus.OK)
@@ -109,7 +144,7 @@ export class AuthController {
 		noRoleGuard: true
 	})
 	async getProfile(@Req() req: AuthRequest): Promise<ProfileResponse> {
-		return req.user;
+		return this.authUserMapper.toProfile(req.user);
 	}
 
 	private async setAuthCookie(res: Response, user: AuthUser) {

@@ -1,16 +1,17 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { dataSource } from "database/dataSource";
+import { dataSourceOptions } from "database/dataSource";
 import createLoggedInAgent from "src/__testUtils__/createLoggedInAgent";
 import createTestApp from "src/__testUtils__/createTestApp";
 import { createFakeUser } from "src/__testUtils__/fakes/fakeUser";
 import TestAccounts from "src/__testUtils__/TestAccounts";
 import { User } from "src/modules/user/UserEntity";
 import request from "supertest";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 
 describe("Auth E2E", () => {
 	let app: INestApplication;
+	let dataSource: DataSource;
 	let userRepository: Repository<User>;
 
 	beforeAll(async () => {
@@ -24,6 +25,7 @@ describe("Auth E2E", () => {
 	});
 
 	const initDatabase = async () => {
+		dataSource = new DataSource(dataSourceOptions);
 		await dataSource.initialize();
 		userRepository = dataSource.getRepository(User);
 		const user = await createFakeUser();
@@ -59,6 +61,46 @@ describe("Auth E2E", () => {
 				secret: secret
 			});
 		});
+	});
+
+	describe("POST /auth/signup", () => {
+		it("should return HTTP 400 when missing parameters", async () => {
+			const response = await request(app.getHttpServer())
+				.post("/auth/signup")
+				.send({
+					name: "AnyName"
+				});
+
+			expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+		});
+
+		// it("should return HTTP 409 when user aready exists", async () => {
+		// 	const response = await request(app.getHttpServer())
+		// 		.post("/auth/signup")
+		// 		.send({
+		// 			// name: "AnyName"
+		// 		});
+
+		// 	expect(response.status).toBe(HttpStatus.CONFLICT);
+		// });
+
+		// it("should return HTTP 204, auth cookie and user data when valid credentials", async () => {
+		// 	const secret = process.env.JWT_SECRET!;
+		// 	const jwtService = new JwtService({ secret });
+
+		// 	const response = await request(app.getHttpServer())
+		// 		.post("/auth/signup")
+		// 		.send(TestAccounts.USER);
+
+		// 	expect(response.status).toBe(HttpStatus.CREATED);
+		// 	expect(response.headers["set-cookie"]).toBeDefined();
+		// 	expect(response.headers["set-cookie"][0]).toMatch(/access_token=.*/);
+		// 	const authCookie = response.headers["set-cookie"][0];
+		// 	const token = authCookie.split(";")[0].split("=")[1];
+		// 	await jwtService.verifyAsync(token, {
+		// 		secret: secret
+		// 	});
+		// });
 	});
 
 	describe("POST /auth/signout", () => {

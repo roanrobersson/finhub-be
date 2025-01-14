@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { CreateUserRequest } from "../dtos/CreateUserRequest";
-import { User } from "../UserEntity";
+import { User } from "../../user/UserEntity";
+import { SignUpRequest } from "../dtos/SignUpRequest";
 
 @Injectable()
-export class CreateUserMapper {
-	toEntity(dto: CreateUserRequest): User {
+export class SignUpMapper {
+	toEntity(dto: SignUpRequest): User {
 		return this.copyToEntity(dto, new User());
 	}
 
-	copyToEntity(dto: CreateUserRequest, entity: User): User {
+	copyToEntity(dto: SignUpRequest, entity: User): User {
 		entity.name = dto.name;
 		entity.email = dto.email;
 		entity.password = dto.password;

@@ -25,6 +25,7 @@ import { CreateRoleRequest } from "./dtos/CreateRoleRequest";
 import {
 	DeleteRoleParams,
 	GetRoleByIdParams,
+	GetRoleByNameParams,
 	UpdateRoleParams
 } from "./dtos/params";
 import { RoleResponse } from "./dtos/RoleResponse";
@@ -73,6 +74,17 @@ export class RoleController {
 	})
 	async getById(@Param() params: GetRoleByIdParams): Promise<RoleResponse> {
 		const role = await this.roleService.getById(params.roleId);
+		return this.roleResponseMapper.toResponse(role);
+	}
+
+	@Get("name/:name")
+	@ApiOperation({ summary: "Find a role by name" })
+	@ApiDefaultGetByIdResponse({
+		type: RoleResponse
+	})
+	async getByName(@Param() params: GetRoleByNameParams): Promise<RoleResponse> {
+		console.log(params);
+		const role = await this.roleService.getByName(params.name);
 		return this.roleResponseMapper.toResponse(role);
 	}
 

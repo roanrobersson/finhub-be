@@ -7,7 +7,6 @@ import {
 	HttpStatus,
 	Inject,
 	Param,
-	Post,
 	Put
 } from "@nestjs/common";
 import {
@@ -16,18 +15,15 @@ import {
 	ApiOperation
 } from "@nestjs/swagger";
 import {
-	ApiDefaultCreateResponse,
 	ApiDefaultDeleteResponse,
 	ApiDefaultGetAllResponse,
 	ApiDefaultGetByIdResponse,
 	ApiDefaultUpdateResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
-import { Public } from "src/core/decorators/PublicDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 import { Roles } from "src/modules/auth/RolesDecorator";
 
 import { ChangeUserPasswordRequest } from "./dtos/ChangeUserPasswordRequest";
-import { CreateUserRequest } from "./dtos/CreateUserRequest";
 import {
 	ChangeUserPasswordParams,
 	DeleteUserParams,
@@ -37,7 +33,6 @@ import {
 import { UpdateUserRequest } from "./dtos/UpdateUserRequest";
 import { UserResponse } from "./dtos/UserResponse";
 import { UserSimplifiedResponse } from "./dtos/UserSimplifiedResponse";
-import { CreateUserMapper } from "./mappers/CreateUserMapper";
 import { UpdateUserMapper } from "./mappers/UpdateUserMapper";
 import { UserResponseMapper } from "./mappers/UserResponseMapper";
 import { UserSimplifiedResponseMapper } from "./mappers/UserSimplifiedResponseMapper";
@@ -46,11 +41,8 @@ import { UserService } from "./UserService";
 @ApiBearerAuth()
 @Controller("users")
 export class UserController {
-	@Inject(UserService)
-	private userService: UserService;
-
 	@Inject()
-	private createUserMapper: CreateUserMapper;
+	private userService: UserService;
 
 	@Inject()
 	private updateUserMapper: UpdateUserMapper;
@@ -63,6 +55,7 @@ export class UserController {
 
 	@Get()
 	@Roles(RoleEnum.ADMIN)
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "List all users" })
 	@ApiDefaultGetAllResponse({
 		type: UserSimplifiedResponse,
@@ -76,25 +69,13 @@ export class UserController {
 	}
 
 	@Get(":userId")
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Find a user by id" })
 	@ApiDefaultGetByIdResponse({
 		type: UserResponse
 	})
 	async getById(@Param() params: GetUserByIdParams): Promise<UserResponse> {
 		const user = await this.userService.getById(params.userId);
-		return this.userResponseMapper.toResponse(user);
-	}
-
-	@Post()
-	@Public()
-	@ApiOperation({ summary: "Create a new user" })
-	@ApiDefaultCreateResponse({
-		type: UserResponse,
-		public: true
-	})
-	async create(@Body() body: CreateUserRequest): Promise<UserResponse> {
-		let user = this.createUserMapper.toEntity(body);
-		user = await this.userService.save(user);
 		return this.userResponseMapper.toResponse(user);
 	}
 
