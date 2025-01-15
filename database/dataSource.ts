@@ -1,11 +1,11 @@
 import "dotenv/config";
 
-import { DataSourceOptions } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { SeederOptions } from "typeorm-extension";
 
 import MainSeeder from "./seeds/MainSeeder";
 
-export const dataSourceOptions: DataSourceOptions & SeederOptions = {
+const options: DataSourceOptions & SeederOptions = {
 	type: "postgres",
 	url: process.env.DB_URL,
 	seedTracking: false,
@@ -14,3 +14,5 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
 	factories: ["database/factories/**/*{.ts,.js}"],
 	migrations: ["database/migrations/**/*{.ts,.js}"]
 };
+
+export const dataSource = new DataSource(options);

@@ -1,36 +1,35 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { dataSourceOptions } from "database/dataSource";
-import createLoggedInAgent from "src/__testUtils__/createLoggedInAgent";
+import { dataSource } from "database/dataSource";
+import { createLoggedInCommonUserAgent } from "src/__testUtils__/createLoggedInAgent";
 import createTestApp from "src/__testUtils__/createTestApp";
 import { createFakeUser } from "src/__testUtils__/fakes/fakeUser";
-import TestAccounts from "src/__testUtils__/TestAccounts";
+import { TestAccounts } from "src/__testUtils__/TestAccounts";
+import { TestDatabaseSeeder } from "src/__testUtils__/TestDatabaseSeeder";
+import { TestUserEnum } from "src/__testUtils__/TestUserEnum";
+import { emailWithTimestamp } from "src/core/utils/miscUtils";
 import { User } from "src/modules/user/UserEntity";
 import request from "supertest";
-import { DataSource, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 describe("Auth E2E", () => {
 	let app: INestApplication;
-	let dataSource: DataSource;
+	let databaseSeeder: TestDatabaseSeeder;
 	let userRepository: Repository<User>;
 
 	beforeAll(async () => {
 		app = await createTestApp();
-		await initDatabase();
+		if (!dataSource.isInitialized) {
+			await dataSource.initialize();
+		}
+		databaseSeeder = new TestDatabaseSeeder(dataSource);
+		await databaseSeeder.seed();
+		userRepository = dataSource.getRepository(User);
 	});
 
 	afterAll(async () => {
-		await userRepository.delete({});
 		await app.close();
 	});
-
-	const initDatabase = async () => {
-		dataSource = new DataSource(dataSourceOptions);
-		await dataSource.initialize();
-		userRepository = dataSource.getRepository(User);
-		const user = await createFakeUser();
-		await userRepository.save(user);
-	};
 
 	describe("POST /auth/signin", () => {
 		it("should return HTTP 401 when invalid credentials", async () => {
@@ -50,7 +49,7 @@ describe("Auth E2E", () => {
 
 			const response = await request(app.getHttpServer())
 				.post("/auth/signin")
-				.send(TestAccounts.USER);
+				.send(TestAccounts.COMMON_USER);
 
 			expect(response.status).toBe(HttpStatus.OK);
 			expect(response.headers["set-cookie"]).toBeDefined();
@@ -74,33 +73,44 @@ describe("Auth E2E", () => {
 			expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 		});
 
-		// it("should return HTTP 409 when user aready exists", async () => {
-		// 	const response = await request(app.getHttpServer())
-		// 		.post("/auth/signup")
-		// 		.send({
-		// 			// name: "AnyName"
-		// 		});
+		it("should return HTTP 409 when user aready exists", async () => {
+			let user = await createFakeUser();
+			user = await userRepository.save(user);
 
-		// 	expect(response.status).toBe(HttpStatus.CONFLICT);
-		// });
+			const response = await request(app.getHttpServer())
+				.post("/auth/signup")
+				.send({
+					name: "AnyName",
+					email: user.email,
+					password: "12345678",
+					picuture: null
+				});
 
-		// it("should return HTTP 204, auth cookie and user data when valid credentials", async () => {
-		// 	const secret = process.env.JWT_SECRET!;
-		// 	const jwtService = new JwtService({ secret });
+			expect(response.status).toBe(HttpStatus.CONFLICT);
+		});
 
-		// 	const response = await request(app.getHttpServer())
-		// 		.post("/auth/signup")
-		// 		.send(TestAccounts.USER);
+		it("should return HTTP 204, auth cookie and user data when valid credentials", async () => {
+			const secret = process.env.JWT_SECRET!;
+			const jwtService = new JwtService({ secret });
 
-		// 	expect(response.status).toBe(HttpStatus.CREATED);
-		// 	expect(response.headers["set-cookie"]).toBeDefined();
-		// 	expect(response.headers["set-cookie"][0]).toMatch(/access_token=.*/);
-		// 	const authCookie = response.headers["set-cookie"][0];
-		// 	const token = authCookie.split(";")[0].split("=")[1];
-		// 	await jwtService.verifyAsync(token, {
-		// 		secret: secret
-		// 	});
-		// });
+			const response = await request(app.getHttpServer())
+				.post("/auth/signup")
+				.send({
+					name: "AnyName",
+					email: emailWithTimestamp("anyname@gmail.com"),
+					password: "12345678",
+					picture: null
+				});
+
+			expect(response.status).toBe(HttpStatus.CREATED);
+			expect(response.headers["set-cookie"]).toBeDefined();
+			expect(response.headers["set-cookie"][0]).toMatch(/access_token=.*/);
+			const authCookie = response.headers["set-cookie"][0];
+			const token = authCookie.split(";")[0].split("=")[1];
+			await jwtService.verifyAsync(token, {
+				secret: secret
+			});
+		});
 	});
 
 	describe("POST /auth/signout", () => {
@@ -111,7 +121,7 @@ describe("Auth E2E", () => {
 		});
 
 		it("should return HTTP 200 and remove auth cookie", async () => {
-			const agent = await createLoggedInAgent(app, TestAccounts.USER);
+			const agent = await createLoggedInCommonUserAgent(app, dataSource);
 			const response = await agent.post("/auth/signout");
 
 			expect(response.status).toBe(HttpStatus.OK);
@@ -128,15 +138,17 @@ describe("Auth E2E", () => {
 		});
 
 		it("should return HTTP 200 and user profile when user authenticated", async () => {
-			const agent = await createLoggedInAgent(app, TestAccounts.USER);
+			const agent = await createLoggedInCommonUserAgent(app, dataSource);
 			const response = await agent.get("/auth/profile");
+			const expectedUser = await userRepository.findOneByOrFail({
+				email: TestUserEnum.COMMON_USER
+			});
 
-			const fakeUser = await createFakeUser();
 			expect(response.status).toBe(HttpStatus.OK);
 			expect(response.body).toMatchObject({
-				name: fakeUser.name,
-				email: fakeUser.email,
-				picture: fakeUser.picture
+				name: expectedUser.name,
+				email: expectedUser.email,
+				picture: expectedUser.picture
 			});
 		});
 	});

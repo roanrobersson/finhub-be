@@ -1,11 +1,17 @@
-export type UserTestCredentials = {
+import { TestUserEnum } from "./TestUserEnum";
+
+export type AccountCredentials = {
 	username: string;
 	password: string;
 };
 
-const TestAccounts: Record<string, UserTestCredentials> = {
-	USER: { username: "user@gmail.com", password: "user" },
-	ADMIN: { username: "admin@gmail.com", password: "admin" }
-};
-
-export default TestAccounts;
+export const TestAccounts = {
+	COMMON_USER: {
+		username: TestUserEnum.COMMON_USER,
+		password: "12345678"
+	},
+	ADMIN: {
+		username: TestUserEnum.ADMIN,
+		password: "12345678"
+	}
+} satisfies Record<string, AccountCredentials>;
