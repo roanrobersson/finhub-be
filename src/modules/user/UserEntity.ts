@@ -38,14 +38,14 @@ export class User extends BaseEntity {
 
 	async addRole(role: Role) {
 		const roles = (await this.roles) ?? [];
-		if (!roles.find((p) => p.equals(role))) {
+		if (!roles.find((r) => r.equals(role))) {
 			this.roles = Promise.resolve([...roles, role]);
 		}
 	}
 
 	async removeRole(role: Role) {
 		const roles = (await this.roles) ?? [];
-		this.roles = Promise.resolve(roles.filter((p) => p.equals(role)));
+		this.roles = Promise.resolve(roles.filter((r) => !r.equals(role)));
 	}
 
 	async getPermissions(): Promise<Permission[]> {

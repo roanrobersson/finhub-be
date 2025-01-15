@@ -4,6 +4,7 @@ import { UniqueException } from "src/core/exceptions/UniqueException";
 import { hashPassword, isPasswordValid } from "src/core/utils/passwordUtils";
 import { Transactional } from "typeorm-transactional";
 
+import { RoleService } from "../role/RoleService";
 import { UserNotFoundException } from "./exceptions/UserNotFoundException";
 import { User } from "./UserEntity";
 import { UserRepository } from "./UserRepository";
@@ -12,6 +13,9 @@ import { UserRepository } from "./UserRepository";
 export class UserService {
 	@Inject()
 	private userRepository: UserRepository;
+
+	@Inject()
+	private roleService: RoleService;
 
 	async getAll(): Promise<User[]> {
 		return this.userRepository.find();
@@ -69,6 +73,22 @@ export class UserService {
 
 	async remove(id: number): Promise<void> {
 		await this.userRepository.delete(id);
+	}
+
+	@Transactional()
+	async associateRole(userId: number, roleId: number): Promise<void> {
+		const user = await this.getById(userId);
+		const role = await this.roleService.getById(roleId);
+		await user.addRole(role);
+		await this.userRepository.save(user);
+	}
+
+	@Transactional()
+	async disassociateRole(userId: number, roleId: number): Promise<void> {
+		const user = await this.getById(userId);
+		const role = await this.roleService.getById(roleId);
+		await user.removeRole(role);
+		await this.userRepository.save(user);
 	}
 
 	async validateUniqueUser(user: User) {

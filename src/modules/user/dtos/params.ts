@@ -36,3 +36,35 @@ export class ChangeUserPasswordParams {
 	})
 	userId: number;
 }
+
+export class AssociateUserRoleParams {
+	@IsId()
+	@ApiProperty({
+		description: "The id of the user",
+		example: 1
+	})
+	userId: number;
+
+	@IsId()
+	@ApiProperty({
+		description: "The id of the role",
+		example: 1
+	})
+	roleId: number;
+}
+
+export class DesassociateUserRoleParams {
+	@IsId()
+	@ApiProperty({
+		description: "The id of the user",
+		example: 1
+	})
+	userId: number;
+
+	@IsId()
+	@ApiProperty({
+		description: "The id of the role",
+		example: 1
+	})
+	roleId: number;
+}

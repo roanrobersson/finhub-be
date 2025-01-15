@@ -31,7 +31,7 @@ export class Role extends BaseEntity {
 
 	async addPermission(permission: Permission): Promise<void> {
 		const permissions = (await this.permissions) ?? [];
-		if (!permissions.find((p) => p.id === permission.id)) {
+		if (!permissions.find((p) => p.equals(permission))) {
 			this.permissions = Promise.resolve([...permissions, permission]);
 		}
 	}
@@ -39,7 +39,7 @@ export class Role extends BaseEntity {
 	async removePermission(permission: Permission): Promise<void> {
 		const permissions = (await this.permissions) ?? [];
 		this.permissions = Promise.resolve(
-			permissions.filter((p) => p.id !== permission.id)
+			permissions.filter((p) => !p.equals(permission))
 		);
 	}
 
