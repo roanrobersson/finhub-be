@@ -12,7 +12,8 @@ const options: DataSourceOptions & SeederOptions = {
 	seeds: [MainSeeder],
 	entities: ["src/modules/**/*Entity{.ts,.js}"],
 	factories: ["database/factories/**/*{.ts,.js}"],
-	migrations: ["database/migrations/**/*{.ts,.js}"]
+	migrations: ["database/migrations/**/*{.ts,.js}"],
+	migrationsTableName: process.env.DB_MIGRATIONS_TABLE_NAME
 };
 
 export const dataSource = new DataSource(options);

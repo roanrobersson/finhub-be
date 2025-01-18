@@ -1,16 +1,17 @@
-import { BaseEntity } from "src/core/BaseEntity";
 import { Permission } from "src/modules/permission/PermissionEntity";
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinTable,
 	ManyToMany,
 	PrimaryGeneratedColumn,
-	Unique
+	Unique,
+	UpdateDateColumn
 } from "typeorm";
 
 @Entity()
-export class Role extends BaseEntity {
+export class Role {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -25,8 +26,15 @@ export class Role extends BaseEntity {
 	@JoinTable({ name: "role_permissions" })
 	private permissions: Promise<Permission[]>;
 
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
+
 	async getPermissions(): Promise<Permission[]> {
-		return this.permissions;
+		const permissions = await this.permissions;
+		return [...permissions];
 	}
 
 	async addPermission(permission: Permission): Promise<void> {
@@ -43,11 +51,11 @@ export class Role extends BaseEntity {
 		);
 	}
 
-	isNew = () => {
-		return !this.id;
-	};
+	isNew(): boolean {
+		return this.id === undefined;
+	}
 
-	equals = (role: Role): boolean => {
+	equals(role: Role): boolean {
 		return this.id === role.id;
-	};
+	}
 }

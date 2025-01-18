@@ -23,21 +23,21 @@ export default class UserSeeder implements Seeder {
 		const adminUser = new User();
 		adminUser.name = "Admin";
 		adminUser.email = "admin@gmail.com";
-		adminUser.password = await hashPassword("admin123");
+		adminUser.password = await hashPassword("12345678");
 		adminUser.picture = "https://i.pravatar.cc/150?img=8";
 		adminUser.addRole(adminRole);
 
 		const felipeUser = new User();
 		felipeUser.name = "Marcos";
 		felipeUser.email = "marcos@gmail.com";
-		felipeUser.password = await hashPassword("marcos123");
+		felipeUser.password = await hashPassword("12345678");
 		felipeUser.picture = "https://i.pravatar.cc/150?img=3";
 		felipeUser.addRole(userRole);
 
 		const mariaUser = new User();
 		mariaUser.name = "Maria";
 		mariaUser.email = "maria@gmail.com";
-		mariaUser.password = await hashPassword("maria123");
+		mariaUser.password = await hashPassword("12345678");
 		mariaUser.picture = "https://i.pravatar.cc/150?img=1";
 		mariaUser.addRole(userRole);
 

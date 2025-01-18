@@ -83,7 +83,6 @@ export class RoleController {
 		type: RoleResponse
 	})
 	async getByName(@Param() params: GetRoleByNameParams): Promise<RoleResponse> {
-		console.log(params);
 		const role = await this.roleService.getByName(params.name);
 		return this.roleResponseMapper.toResponse(role);
 	}

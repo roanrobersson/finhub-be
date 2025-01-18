@@ -13,13 +13,11 @@ export default class PermissionSeeder implements Seeder {
 		const queryUsersRolesPermission = new Permission();
 		queryUsersRolesPermission.name =
 			PermissionEnum.QUERY_USERS_ROLES_PERMISSIONS;
-
 		queryUsersRolesPermission.description =
 			"Allows to query users, roles and permissions";
 
 		const editUsersRolesPermission = new Permission();
 		editUsersRolesPermission.name = PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS;
-
 		editUsersRolesPermission.description =
 			"Allows to edit users, roles and permissions";
 

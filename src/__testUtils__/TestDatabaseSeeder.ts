@@ -34,6 +34,8 @@ export class TestDatabaseSeeder {
 		queryUserRolesPermission = await this.createPermissionIfNotExists(
 			queryUserRolesPermission
 		);
+		queryUserRolesPermission.createdAt = new Date();
+		queryUserRolesPermission.updatedAt = new Date();
 
 		let editUserRolesPermission = new Permission();
 		editUserRolesPermission.name = PermissionEnum.EDIT_USERS_ROLES_PERMISSIONS;
@@ -41,6 +43,8 @@ export class TestDatabaseSeeder {
 		editUserRolesPermission = await this.createPermissionIfNotExists(
 			editUserRolesPermission
 		);
+		editUserRolesPermission.createdAt = new Date();
+		editUserRolesPermission.updatedAt = new Date();
 
 		// Creates roles
 
@@ -48,6 +52,8 @@ export class TestDatabaseSeeder {
 		userRole.name = RoleEnum.USER;
 		userRole.description = "User role";
 		userRole = await this.createRoleIfNotExists(userRole);
+		userRole.createdAt = new Date();
+		userRole.updatedAt = new Date();
 
 		let adminRole = new Role();
 		adminRole.name = RoleEnum.ADMIN;
@@ -55,6 +61,8 @@ export class TestDatabaseSeeder {
 		adminRole.addPermission(queryUserRolesPermission);
 		adminRole.addPermission(editUserRolesPermission);
 		adminRole = await this.createRoleIfNotExists(adminRole);
+		adminRole.createdAt = new Date();
+		adminRole.updatedAt = new Date();
 
 		// Creates users
 
@@ -65,6 +73,8 @@ export class TestDatabaseSeeder {
 		commonUser.picture = "https://i.pravatar.cc/150?img=26";
 		commonUser.addRole(userRole);
 		commonUser = await this.createUserIfNotExists(commonUser);
+		commonUser.createdAt = new Date();
+		commonUser.updatedAt = new Date();
 
 		let adminUser = new User();
 		adminUser.name = "Admin";
@@ -73,6 +83,8 @@ export class TestDatabaseSeeder {
 		adminUser.picture = "https://i.pravatar.cc/150?img=1";
 		adminUser.addRole(adminRole);
 		adminUser = await this.createUserIfNotExists(adminUser);
+		adminUser.createdAt = new Date();
+		adminUser.updatedAt = new Date();
 	}
 
 	async revert(): Promise<void> {

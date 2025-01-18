@@ -1,17 +1,18 @@
-import { BaseEntity } from "src/core/BaseEntity";
 import { Permission } from "src/modules/permission/PermissionEntity";
 import { Role } from "src/modules/role/RoleEntity";
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinTable,
 	ManyToMany,
 	PrimaryGeneratedColumn,
-	Unique
+	Unique,
+	UpdateDateColumn
 } from "typeorm";
 
 @Entity()
-export class User extends BaseEntity {
+export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -32,18 +33,25 @@ export class User extends BaseEntity {
 	@JoinTable({ name: "user_roles" })
 	private roles: Promise<Role[]>;
 
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
+
 	async getRoles(): Promise<Role[]> {
-		return this.roles;
+		const roles = await this.roles;
+		return [...roles];
 	}
 
-	async addRole(role: Role) {
+	async addRole(role: Role): Promise<void> {
 		const roles = (await this.roles) ?? [];
 		if (!roles.find((r) => r.equals(role))) {
 			this.roles = Promise.resolve([...roles, role]);
 		}
 	}
 
-	async removeRole(role: Role) {
+	async removeRole(role: Role): Promise<void> {
 		const roles = (await this.roles) ?? [];
 		this.roles = Promise.resolve(roles.filter((r) => !r.equals(role)));
 	}
@@ -58,10 +66,10 @@ export class User extends BaseEntity {
 	}
 
 	isNew(): boolean {
-		return !this.id;
+		return this.id === undefined;
 	}
 
-	equals = (user: User): boolean => {
+	equals(user: User): boolean {
 		return this.id === user.id;
-	};
+	}
 }

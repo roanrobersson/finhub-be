@@ -1,8 +1,14 @@
-import { BaseEntity } from "src/core/BaseEntity";
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	Unique,
+	UpdateDateColumn
+} from "typeorm";
 
 @Entity()
-export class Permission extends BaseEntity {
+export class Permission {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -13,7 +19,17 @@ export class Permission extends BaseEntity {
 	@Column()
 	description: string;
 
-	equals = (permission: Permission): boolean => {
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
+
+	isNew(): boolean {
+		return this.id === undefined;
+	}
+
+	equals(permission: Permission): boolean {
 		return this.id === permission.id;
-	};
+	}
 }
