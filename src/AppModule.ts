@@ -14,6 +14,8 @@ import { AuthModule } from "./modules/auth/AuthModule";
 import { EmailModule } from "./modules/email/EmailModule";
 import { PermissionModule } from "./modules/permission/PermissionModule";
 import { RoleModule } from "./modules/role/RoleModule";
+import { Tag } from "./modules/tag/TagEntity";
+import { TagModule } from "./modules/tag/TagModule";
 import { UserModule } from "./modules/user/UserModule";
 
 @Module({
@@ -34,7 +36,7 @@ import { UserModule } from "./modules/user/UserModule";
 				type: "postgres",
 				url: configService.get<string>("DB_URL"),
 				logging: Boolean(configService.get<boolean>("DB_LOGGING", false)),
-				entities: [User, Permission, Role]
+				entities: [User, Permission, Role, Tag]
 			}),
 			async dataSourceFactory(options) {
 				if (!options) {
@@ -47,7 +49,8 @@ import { UserModule } from "./modules/user/UserModule";
 		UserModule,
 		RoleModule,
 		PermissionModule,
-		EmailModule
+		EmailModule,
+		TagModule
 	],
 	controllers: [AppController],
 	providers: [

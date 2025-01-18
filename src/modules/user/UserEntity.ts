@@ -6,12 +6,16 @@ import {
 	Entity,
 	JoinTable,
 	ManyToMany,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	Unique,
 	UpdateDateColumn
 } from "typeorm";
 
+import { Tag } from "../tag/TagEntity";
+
 @Entity()
+@Unique(["email"])
 export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -20,7 +24,6 @@ export class User {
 	name: string;
 
 	@Column()
-	@Unique(["email"])
 	email: string;
 
 	@Column({ type: "varchar", nullable: true })
@@ -32,6 +35,9 @@ export class User {
 	@ManyToMany(() => Role)
 	@JoinTable({ name: "user_roles" })
 	private roles: Promise<Role[]>;
+
+	@OneToMany(() => Tag, (tag) => tag.user)
+	private tags: Promise<Tag[]>;
 
 	@CreateDateColumn()
 	createdAt: Date;
@@ -63,6 +69,23 @@ export class User {
 		);
 		const permissions = permissionsArrays.flat();
 		return [...new Set(permissions)];
+	}
+
+	async getTags(): Promise<Tag[]> {
+		const tags = await this.tags;
+		return [...tags];
+	}
+
+	async addTag(tag: Tag): Promise<void> {
+		const tags = (await this.tags) ?? [];
+		if (!tags.find((t) => t.equals(tag))) {
+			this.tags = Promise.resolve([...tags, tag]);
+		}
+	}
+
+	async removeTag(tag: Tag): Promise<void> {
+		const tags = (await this.tags) ?? [];
+		this.tags = Promise.resolve(tags.filter((t) => !t.equals(tag)));
 	}
 
 	isNew(): boolean {

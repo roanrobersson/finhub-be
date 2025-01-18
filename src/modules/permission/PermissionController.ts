@@ -1,4 +1,11 @@
-import { Controller, Get, Inject, Param } from "@nestjs/common";
+import {
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Inject,
+	Param
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import {
 	ApiDefaultGetAllResponse,
@@ -19,6 +26,7 @@ export class PermissionController {
 	private permissionResponseMapper: PermissionResponseMapper;
 
 	@Get()
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "List all permissions" })
 	@ApiDefaultGetAllResponse({
 		type: PermisssionResponse,
@@ -32,6 +40,7 @@ export class PermissionController {
 	}
 
 	@Get(":permissionId")
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Find a permission by id" })
 	@ApiResponse({ type: PermisssionResponse })
 	@ApiDefaultGetByIdResponse({

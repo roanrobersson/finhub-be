@@ -55,6 +55,7 @@ export class RoleController {
 	private roleSimplifiedResponseMapper: RoleSimplifiedResponseMapper;
 
 	@Get()
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "List all roles" })
 	@ApiDefaultGetAllResponse({
 		type: RoleResponse,
@@ -68,6 +69,7 @@ export class RoleController {
 	}
 
 	@Get(":roleId")
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Find a role by id" })
 	@ApiDefaultGetByIdResponse({
 		type: RoleResponse
@@ -78,6 +80,7 @@ export class RoleController {
 	}
 
 	@Get("name/:name")
+	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Find a role by name" })
 	@ApiDefaultGetByIdResponse({
 		type: RoleResponse
@@ -89,6 +92,7 @@ export class RoleController {
 
 	@Post()
 	@Roles(RoleEnum.ADMIN)
+	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({ summary: "Create a new role" })
 	@ApiDefaultCreateResponse({
 		type: RoleResponse

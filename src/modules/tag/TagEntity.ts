@@ -2,22 +2,28 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	ManyToOne,
 	PrimaryGeneratedColumn,
 	Unique,
 	UpdateDateColumn
 } from "typeorm";
 
+import { User } from "../user/UserEntity";
+
 @Entity()
-@Unique(["name"])
-export class Permission {
+@Unique(["name", "userId"])
+export class Tag {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
 	name: string;
 
+	@ManyToOne(() => User, (user) => user.getTags, { onDelete: "CASCADE" })
+	user: Promise<User>;
+
 	@Column()
-	description: string;
+	userId: number;
 
 	@CreateDateColumn()
 	createdAt: Date;
@@ -29,7 +35,7 @@ export class Permission {
 		return this.id === undefined;
 	}
 
-	equals(permission: Permission): boolean {
-		return this.id === permission.id;
+	equals(tag: Tag): boolean {
+		return this.id === tag.id;
 	}
 }

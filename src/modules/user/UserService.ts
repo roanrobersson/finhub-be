@@ -100,7 +100,9 @@ export class UserService {
 			return;
 		}
 		if (isInsert || existingUser.id !== user.id) {
-			throw new UniqueException(`User with email ${user.email} already exists`);
+			throw new UniqueException(
+				`User with email '${user.email}' already exists`
+			);
 		}
 	}
 }

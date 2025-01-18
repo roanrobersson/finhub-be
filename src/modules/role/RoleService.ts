@@ -80,7 +80,7 @@ export class RoleService {
 			return;
 		}
 		if (isInsert || existingRole.id !== role.id) {
-			throw new UniqueException(`Role with name ${role.name} already exists`);
+			throw new UniqueException(`Role with name '${role.name}' already exists`);
 		}
 	}
 }

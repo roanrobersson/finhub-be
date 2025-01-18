@@ -11,12 +11,12 @@ import {
 } from "typeorm";
 
 @Entity()
+@Unique(["name"])
 export class Role {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
-	@Unique(["name"])
 	name: string;
 
 	@Column()
