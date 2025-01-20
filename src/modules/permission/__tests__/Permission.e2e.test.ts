@@ -11,7 +11,6 @@ import { Permission } from "../PermissionEntity";
 
 describe("Permission E2E", () => {
 	let app: INestApplication;
-	let databaseSeeder: TestDatabaseSeeder;
 	let permissionRepository: Repository<Permission>;
 
 	beforeAll(async () => {
@@ -19,7 +18,7 @@ describe("Permission E2E", () => {
 		if (!dataSource.isInitialized) {
 			await dataSource.initialize();
 		}
-		databaseSeeder = new TestDatabaseSeeder(dataSource);
+		const databaseSeeder = new TestDatabaseSeeder(dataSource);
 		await databaseSeeder.seed();
 		permissionRepository = dataSource.getRepository(Permission);
 	});
