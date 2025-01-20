@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { RoleEnum } from "src/core/enums/RoleEnum";
 import { BusinessException } from "src/core/exceptions/BusinessException";
 import { UniqueException } from "src/core/exceptions/UniqueException";
 import { hashPassword, isPasswordValid } from "src/core/utils/passwordUtils";
@@ -49,6 +50,10 @@ export class UserService {
 		if (user.isNew() && user.password) {
 			const hashedPassword = await hashPassword(user.password);
 			user.password = hashedPassword;
+		}
+		if (user.isNew()) {
+			const userRole = await this.roleService.getByName(RoleEnum.USER);
+			await user.addRole(userRole);
 		}
 		return await this.userRepository.save(user);
 	}

@@ -1,9 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { RoleEnum } from "src/core/enums/RoleEnum";
 import { isPasswordValid } from "src/core/utils/passwordUtils";
 
-import { RoleService } from "../role/RoleService";
 import { User } from "../user/UserEntity";
 import { UserService } from "../user/UserService";
 import { AuthUser } from "./dtos/AuthUser";
@@ -15,9 +13,6 @@ export class AuthService {
 
 	@Inject()
 	private userService: UserService;
-
-	@Inject()
-	private roleService: RoleService;
 
 	async validateUserByEmailAndPassword(
 		email: string,
@@ -44,10 +39,7 @@ export class AuthService {
 	}
 
 	async signUp(user: User): Promise<User> {
-		const userRole = await this.roleService.getByName(RoleEnum.USER);
-		user.addRole(userRole);
-		user = await this.userService.save(user);
-		return user;
+		return await this.userService.save(user);
 	}
 
 	generateJwtToken(user: AuthUser): string {
