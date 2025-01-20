@@ -1,3 +1,4 @@
+import { RoleEnum } from "src/core/enums/RoleEnum";
 import { Permission } from "src/modules/permission/PermissionEntity";
 import { Role } from "src/modules/role/RoleEntity";
 import {
@@ -86,6 +87,11 @@ export class User {
 	async removeTag(tag: Tag): Promise<void> {
 		const tags = (await this.tags) ?? [];
 		this.tags = Promise.resolve(tags.filter((t) => !t.equals(tag)));
+	}
+
+	async isAdmin(): Promise<boolean> {
+		const roles = await this.getRoles();
+		return roles.some((role) => role.name === RoleEnum.ADMIN);
 	}
 
 	isNew(): boolean {

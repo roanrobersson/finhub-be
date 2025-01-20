@@ -21,8 +21,9 @@ import {
 	ApiDefaultUpdateResponse
 } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
-import { Roles } from "src/modules/auth/RolesDecorator";
+import { RequireRoles } from "src/modules/auth/RequireRolesDecorator";
 
+import { RequireSelf } from "../auth/RequireSelfDecorator";
 import { ChangeUserPasswordRequest } from "./dtos/ChangeUserPasswordRequest";
 import {
 	ChangeUserPasswordParams,
@@ -54,7 +55,7 @@ export class UserController {
 	private userSimplifiedResponseMapper: UserSimplifiedResponseMapper;
 
 	@Get()
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "List all users" })
 	@ApiDefaultGetAllResponse({
@@ -69,6 +70,7 @@ export class UserController {
 	}
 
 	@Get(":userId")
+	@RequireSelf()
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Find a user by id" })
 	@ApiDefaultGetByIdResponse({
@@ -80,6 +82,7 @@ export class UserController {
 	}
 
 	@Put(":userId")
+	@RequireSelf()
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a user by id" })
 	@ApiDefaultUpdateResponse({
@@ -96,6 +99,7 @@ export class UserController {
 	}
 
 	@Put(":userId/change-password")
+	@RequireSelf()
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Upddate a user password by id" })
 	@ApiNoContentResponse({
@@ -113,7 +117,7 @@ export class UserController {
 	}
 
 	@Delete(":userId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a user by id" })
 	@ApiDefaultDeleteResponse()

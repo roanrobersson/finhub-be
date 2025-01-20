@@ -11,7 +11,7 @@ import { ApiOperation } from "@nestjs/swagger";
 import { ApiDefaultActionResponse } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
-import { Roles } from "../auth/RolesDecorator";
+import { RequireRoles } from "../auth/RequireRolesDecorator";
 import {
 	AssociateRolePermissionParams,
 	DesassociateRolePermissionParams
@@ -24,7 +24,7 @@ export class RolePermissionController {
 	private roleService: RoleService;
 
 	@Put(":permissionId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Associate a permission to a role" })
 	@ApiDefaultActionResponse({
@@ -40,7 +40,7 @@ export class RolePermissionController {
 	}
 
 	@Delete(":permissionId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Disassociate a permission from a role" })
 	@ApiDefaultActionResponse({

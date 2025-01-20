@@ -9,7 +9,9 @@ import { RoleModule } from "../role/RoleModule";
 import { AuthController } from "./AuthController";
 import { AuthService } from "./AuthService";
 import { JwtAuthGuard } from "./guards/JwtAuthGuard";
-import { RolesGuard } from "./guards/RolesGuard";
+import { RequirePermissionsGuard } from "./guards/RequirePermissionsGuard";
+import { RequireRolesGuard } from "./guards/RequireRolesGuard";
+import { RequireSelfGuard } from "./guards/RequireSelfGuard";
 import { AuthUserMapper } from "./mappers/AuthRequestMapper";
 import { JwtPayloadMapper } from "./mappers/JwtPayloadMapper";
 import { SignUpMapper } from "./mappers/SignUpMapper";
@@ -44,7 +46,15 @@ import { LocalStrategy } from "./strategies/LocalStrategy";
 		},
 		{
 			provide: APP_GUARD,
-			useClass: RolesGuard
+			useClass: RequireRolesGuard
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RequirePermissionsGuard
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RequireSelfGuard
 		},
 
 		AuthService,

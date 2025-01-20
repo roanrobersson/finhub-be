@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 import { AuthUser } from "./AuthUser";
 
 export interface AuthRequest extends Omit<Request, "user"> {

@@ -13,13 +13,6 @@ export class GetAllTagsParams {
 export class CreateTagParams {
 	@IsId()
 	@ApiProperty({
-		description: "The id of the tag",
-		example: 1
-	})
-	tagId: number;
-
-	@IsId()
-	@ApiProperty({
 		description: "The id of the user",
 		example: 1
 	})

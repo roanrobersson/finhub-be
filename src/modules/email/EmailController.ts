@@ -9,7 +9,7 @@ import {
 import { ApiDefaultActionResponse } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
-import { Roles } from "../auth/RolesDecorator";
+import { RequireRoles } from "../auth/RequireRolesDecorator";
 import { SendEmailRequest } from "./dtos/SendEmailRequest";
 import { SendEmailResponse } from "./dtos/SendEmailResponse";
 import { EmailService } from "./EmailService";
@@ -20,7 +20,7 @@ export class EmailController {
 	private emailService: EmailService;
 
 	@Post("send")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@ApiDefaultActionResponse({
 		description: "The email has been successfully sent.",

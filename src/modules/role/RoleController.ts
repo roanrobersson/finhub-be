@@ -20,7 +20,7 @@ import {
 } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
-import { Roles } from "../auth/RolesDecorator";
+import { RequireRoles } from "../auth/RequireRolesDecorator";
 import { CreateRoleRequest } from "./dtos/CreateRoleRequest";
 import {
 	DeleteRoleParams,
@@ -91,7 +91,7 @@ export class RoleController {
 	}
 
 	@Post()
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({ summary: "Create a new role" })
 	@ApiDefaultCreateResponse({
@@ -104,7 +104,7 @@ export class RoleController {
 	}
 
 	@Put(":roleId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({ summary: "Update a role by id" })
 	@ApiDefaultUpdateResponse({
@@ -121,7 +121,7 @@ export class RoleController {
 	}
 
 	@Delete(":roleId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Remove a role by id" })
 	@ApiDefaultDeleteResponse()

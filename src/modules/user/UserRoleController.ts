@@ -11,7 +11,7 @@ import { ApiOperation } from "@nestjs/swagger";
 import { ApiDefaultActionResponse } from "src/core/decorators/ApiDefaultResponseDecorator";
 import { RoleEnum } from "src/core/enums/RoleEnum";
 
-import { Roles } from "../auth/RolesDecorator";
+import { RequireRoles } from "../auth/RequireRolesDecorator";
 
 import "./dtos/params";
 
@@ -27,7 +27,7 @@ export class UserRoleController {
 	private userService: UserService;
 
 	@Put(":roleId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Associate a role to a user" })
 	@ApiDefaultActionResponse({
@@ -38,7 +38,7 @@ export class UserRoleController {
 	}
 
 	@Delete(":roleId")
-	@Roles(RoleEnum.ADMIN)
+	@RequireRoles(RoleEnum.ADMIN)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ summary: "Disassociate a role from a user" })
 	@ApiDefaultActionResponse({
